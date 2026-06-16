@@ -1,0 +1,1699 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Dashboard User-Friendly Silt Excluder</title>
+<style>
+  :root{
+    --bg:#f4f7fb;
+    --card:#ffffff;
+    --text:#1f2937;
+    --muted:#6b7280;
+    --line:#e5e7eb;
+    --blue:#2563eb;
+    --green:#16a34a;
+    --yellow:#ca8a04;
+    --red:#dc2626;
+    --purple:#7c3aed;
+    --teal:#0891b2;
+    --shadow:0 10px 28px rgba(15,23,42,.08);
+    --radius:18px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    line-height:1.55;
+  }
+  header{
+    background:linear-gradient(135deg,#123c8c,#2563eb 55%,#06b6d4);
+    color:white;
+    padding:34px 28px 90px;
+  }
+  .wrap{max-width:1180px;margin:0 auto}
+  .badge{
+    display:inline-block;
+    font-size:12px;
+    font-weight:700;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    background:rgba(255,255,255,.18);
+    padding:7px 12px;
+    border-radius:999px;
+    margin-bottom:14px;
+  }
+  h1{font-size:34px;line-height:1.15;margin-bottom:10px;max-width:760px}
+  .subtitle{max-width:780px;color:rgba(255,255,255,.86);font-size:15px}
+
+  main{margin-top:-58px;padding:0 20px 42px}
+  .panel{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    padding:22px;
+    margin-bottom:18px;
+  }
+  .top-combined{
+    display:grid;
+    grid-template-columns:minmax(0,1.08fr) minmax(0,.92fr);
+    gap:26px;
+    align-items:start;
+    margin-bottom:18px;
+  }
+  .top-left,
+  .top-right{
+    min-width:0;
+  }
+  .top-right{
+    border-left:1px solid var(--line);
+    padding-left:26px;
+  }
+  .input-grid{
+    display:grid;
+    grid-template-columns:repeat(4,minmax(0,1fr));
+    column-gap:22px;
+    row-gap:18px;
+    align-items:start;
+  }
+  .top-combined .input-grid{grid-template-columns:repeat(2,minmax(0,1fr));column-gap:18px;row-gap:16px;}
+  .input-field{
+    display:flex;
+    flex-direction:column;
+    min-height:104px;
+  }
+  label{font-weight:700;font-size:13px;color:#374151;display:block;margin-bottom:8px;min-height:18px}
+  select,input[type=number]{
+    width:100%;
+    border:1px solid #cfd6e3;
+    background:#f9fafb;
+    border-radius:12px;
+    padding:12px 13px;
+    font-size:14px;
+    color:var(--text);
+    outline:none;
+  }
+  select:focus,input[type=number]:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(37,99,235,.12)}
+  .slider-row{display:grid;grid-template-columns:1fr 86px;gap:12px;align-items:center}
+  .range-meta{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--muted);margin-top:8px;min-height:16px}
+  input[type=range]{width:100%;accent-color:var(--blue)}
+  .auto-field{
+    display:flex;
+    flex-direction:column;
+    min-height:104px;
+  }
+  .readonly-box{
+    width:100%;
+    min-height:46px;
+    border:1px solid #cfd6e3;
+    background:#f4f7fb;
+    border-radius:12px;
+    padding:12px 13px;
+    font-size:14px;
+    color:var(--text);
+    box-sizing:border-box;
+  }
+  button{
+    border:0;
+    background:var(--blue);
+    color:white;
+    padding:13px 20px;
+    border-radius:13px;
+    font-weight:800;
+    cursor:pointer;
+    box-shadow:0 8px 20px rgba(37,99,235,.22);
+    white-space:nowrap;
+  }
+  button:hover{filter:brightness(.96)}
+
+  .section-title{font-size:19px;font-weight:850;margin-bottom:12px;display:flex;align-items:center;gap:9px}
+  .section-title span{font-size:12px;color:white;background:var(--blue);padding:4px 9px;border-radius:999px}
+  .help{color:var(--muted);font-size:13px;margin-top:-5px;margin-bottom:16px}
+
+  .result-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:12px;
+  }
+  .top-combined .result-grid{grid-template-columns:repeat(2,minmax(0,1fr));}
+  .result-card{
+    border:1px solid var(--line);
+    border-radius:16px;
+    background:#fbfdff;
+    padding:15px;
+    min-height:118px;
+  }
+  .result-card .name{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:#2563eb;font-weight:900;margin-bottom:6px}
+  .result-card .name .eta-symbol{text-transform:none!important;}
+  .result-card .value{font-size:25px;font-weight:900;color:#111827;line-height:1.1}
+  .result-card .unit{font-size:12px;color:var(--muted);margin-top:4px}
+  .result-card.good{border-color:#bbf7d0;background:#f0fdf4}
+  .result-card.warn{border-color:#fde68a;background:#fffbeb}
+  .result-card.bad{border-color:#fecaca;background:#fef2f2}
+
+  .status-box{
+    display:grid;
+    grid-template-columns:280px 1fr;
+    gap:18px;
+    align-items:stretch;
+  }
+  .status-main{
+    border-radius:18px;
+    padding:20px;
+    color:white;
+    background:var(--yellow);
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+  }
+  .status-main.good{background:var(--green)}
+  .status-main.bad{background:var(--red)}
+  .status-main .small{font-size:13px;opacity:.9;font-weight:700;text-transform:uppercase;letter-spacing:.08em}
+  .status-main .big{font-size:28px;font-weight:950;margin-top:3px;line-height:1.15}
+  .reco{
+    border:1px solid var(--line);
+    border-radius:18px;
+    padding:16px;
+    background:#fbfdff;
+  }
+  .reco ul{padding-left:20px;color:#374151;font-size:14px}
+  .reco li{margin:5px 0}
+
+  .all-charts-card{
+    border:1px solid var(--line);
+    border-radius:22px;
+    background:#fff;
+    padding:24px;
+    box-shadow:var(--shadow);
+    overflow:hidden;
+  }
+  .all-charts-head{
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:16px;
+    border-bottom:1px solid var(--line);
+    padding-bottom:14px;
+    margin-bottom:16px;
+  }
+  .all-charts-head h3{font-size:18px;margin-bottom:3px}
+  .all-charts-head p{font-size:13px;color:var(--muted);max-width:760px}
+  .mini-chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .mini-chart{
+    border:1px solid #dbe3ef;
+    border-radius:16px;
+    background:#fbfdff;
+    padding:14px;
+    overflow:hidden;
+  }
+  .chart-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;margin-bottom:8px}
+  .chart-head h3{font-size:15px}
+  .chart-note{font-size:12px;color:var(--muted);margin-top:2px}
+  canvas{display:block;width:100%;height:245px}
+
+  .advanced-chart-card{
+    margin-top:16px;
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:18px;
+    padding:18px;
+    box-shadow:var(--shadow);
+  }
+  .advanced-chart-card .chart-note{max-width:920px}
+  canvas.advanced-canvas{height:410px}
+  canvas.nomogram-canvas{height:520px}
+  .nomogram-card{
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:18px;
+    padding:24px;
+    box-shadow:var(--shadow);
+    overflow:hidden;
+  }
+
+  details{
+    border:1px solid var(--line);
+    border-radius:18px;
+    background:white;
+    padding:16px;
+  }
+  summary{font-weight:900;cursor:pointer;color:#111827}
+  .advanced-note{font-size:13px;color:var(--muted);margin:10px 0 14px}
+
+  .legend{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px;font-size:12px;color:var(--muted)}
+  .chip{display:inline-flex;align-items:center;gap:6px}
+  .dot{width:10px;height:10px;border-radius:50%;display:inline-block;background:#999}
+
+
+
+  .info-section{
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:22px;
+    box-shadow:var(--shadow);
+    padding:22px;
+    margin-top:18px;
+  }
+  .info-intro{
+    color:var(--muted);
+    font-size:14px;
+    max-width:960px;
+    margin:-4px 0 18px;
+  }
+  .info-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:16px;
+    margin-bottom:16px;
+  }
+  .info-card{
+    border:1px solid #dbe3ef;
+    border-radius:18px;
+    background:#fbfdff;
+    padding:16px;
+  }
+  .info-card h3{
+    font-size:16px;
+    margin-bottom:8px;
+    color:#111827;
+  }
+  .info-card p,.info-card li{
+    font-size:13.5px;
+    color:#374151;
+  }
+  .info-card ul{padding-left:18px;margin-top:6px}
+  .info-card li{margin:5px 0}
+  .formula-table-wrap{
+    overflow-x:auto;
+    border:1px solid #dbe3ef;
+    border-radius:18px;
+    background:white;
+  }
+  .formula-table{
+    width:100%;
+    border-collapse:collapse;
+    min-width:850px;
+    font-size:13px;
+  }
+  .formula-table th{
+    background:#0f172a;
+    color:white;
+    text-align:left;
+    padding:11px 14px;
+    font-size:12px;
+    letter-spacing:.05em;
+    text-transform:uppercase;
+  }
+  .formula-table td{
+    padding:12px 14px;
+    border-top:1px solid #edf2f7;
+    vertical-align:top;
+    color:#374151;
+  }
+  .formula-table tr:nth-child(even) td{background:#f8fafc}
+  .formula-code{
+    font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono",monospace;
+    font-weight:800;
+    color:#1d4ed8;
+    white-space:nowrap;
+  }
+  .pill-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+  .pill{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    border:1px solid #dbe3ef;
+    background:#f8fafc;
+    color:#334155;
+    padding:7px 10px;
+    border-radius:999px;
+    font-size:12px;
+    font-weight:750;
+  }
+
+  .info-accordion{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    margin-top:16px;
+  }
+  .info-accordion details{
+    border:1px solid #dbe3ef;
+    border-radius:18px;
+    background:#fbfdff;
+    padding:0;
+    overflow:hidden;
+  }
+  .info-accordion summary{
+    list-style:none;
+    cursor:pointer;
+    padding:16px 18px;
+    font-size:15px;
+    font-weight:900;
+    color:#111827;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+  }
+  .info-accordion summary::-webkit-details-marker{display:none}
+  .info-accordion summary::after{
+    content:'⌄';
+    width:28px;
+    height:28px;
+    border-radius:999px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    background:#eaf1ff;
+    color:#1d4ed8;
+    font-size:20px;
+    line-height:1;
+    transition:transform .18s ease;
+    flex:0 0 auto;
+  }
+  .info-accordion details[open] summary::after{transform:rotate(180deg)}
+  .info-accordion .accordion-body{
+    padding:0 18px 18px;
+    border-top:1px solid #e5edf8;
+  }
+  .info-accordion .info-grid{margin-top:16px}
+
+  @media(max-width:1100px){.top-sections{grid-template-columns:1fr}.top-sections .input-grid{grid-template-columns:repeat(2,minmax(0,1fr));}.top-combined .result-grid{grid-template-columns:repeat(2,minmax(0,1fr));}}
+  @media(max-width:900px){.info-grid{grid-template-columns:1fr}.formula-table{min-width:760px}}
+
+  @media(max-width:900px){
+    header{padding-bottom:76px}
+    h1{font-size:28px}
+    .top-combined,.input-grid,.status-box,.mini-chart-grid{grid-template-columns:1fr}
+    .all-charts-head{flex-direction:column}
+    .result-grid{grid-template-columns:repeat(2,1fr)}
+    button{width:100%}
+  }
+  @media(max-width:560px){.result-grid{grid-template-columns:1fr}}
+
+  /* Dark technical chart panel */
+  .dark-dashboard{
+    margin-top:8px;
+    background:#07111f;
+    border:1px solid #0ea5ff;
+    border-radius:18px;
+    box-shadow:0 14px 30px rgba(2,8,23,.28);
+    overflow:hidden;
+  }
+  .dark-grid{
+    display:grid;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:0;
+  }
+  .dark-chart{
+    background:linear-gradient(180deg,#0a1426 0%, #081223 100%);
+    border-right:1px solid rgba(14,165,255,.22);
+    border-top:1px solid rgba(14,165,255,.18);
+    padding:12px 14px 10px;
+    min-height:265px;
+  }
+  .dark-chart.span-2{grid-column:span 2}
+  .dark-chart-title{
+    font-size:13px;
+    font-weight:800;
+    letter-spacing:.04em;
+    text-transform:uppercase;
+    margin-bottom:8px;
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  .dark-chart-title.cyan{color:#12d5ff}
+  .dark-chart-title.green{color:#00f0c8}
+  .dark-chart-title.red{color:#ff5b7f}
+  .dark-chart-title.amber{color:#ffbf00}
+  .dark-chart-title.purple{color:#b678ff}
+  .dark-chart canvas{
+    width:100%;
+    height:210px;
+    display:block;
+  }
+  .dark-panel-help{
+    color:#c6d8f5;
+    opacity:.9;
+    font-size:13px;
+    line-height:1.5;
+    margin:0 0 12px;
+  }
+
+
+  input[disabled], input[readonly]{
+    cursor:not-allowed;
+    opacity:.78;
+    background:#f3f6fb;
+  }
+
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div style="display:inline-block;font-size:14px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#2563eb;background:rgba(255,255,255,.96);padding:10px 16px;border-radius:999px;margin-bottom:14px;box-shadow:0 8px 24px rgba(0,0,0,.10);">Herryan Kendra Kaharudin</div>
+    <h1>Dashboard Desain Silt Excluder untuk Sedimen Kohesif</h1>
+    <p class="subtitle">Masukkan jenis sedimen dan debit rencana. Sistem langsung menampilkan dimensi utama, status desain, rekomendasi, dan grafik yang dipisah agar mudah dibaca.</p>
+  </div>
+</header>
+
+<main>
+<div class="wrap">
+  <section class="panel top-combined">
+    <div class="top-left">
+      <div class="section-title"><span>1</span> Input Desain</div>
+      <div class="input-grid">
+        <div class="input-field">
+          <label for="sedType">Jenis Sedimen</label>
+          <select id="sedType">
+            <option value="lanau_lunak">Lanau Lunak — D₅₀ 0,010–0,020 mm</option>
+            <option value="lanau_sedang" selected>Lanau Sedang — D₅₀ 0,020–0,050 mm</option>
+            <option value="clay">Lempung / Clay — D₅₀ &lt; 0,010 mm</option>
+            <option value="lanau_padat">Lanau Padat — D₅₀ 0,030–0,060 mm</option>
+          </select>
+          <div class="range-meta"><span>pilihan material</span><span>D₅₀</span></div>
+        </div>
+
+        <div class="input-field">
+          <label for="qSlider">Debit Rencana Q: <b id="qText">7,0</b> m³/s</label>
+          <div class="slider-row">
+            <input type="range" id="qSlider" min="1" max="15" step="0.5" value="7" />
+            <input type="number" id="qNum" min="1" max="15" step="0.5" value="7" />
+          </div>
+          <div class="range-meta"><span>debit rencana</span><span>m³/s</span></div>
+        </div>
+
+        <div class="input-field">
+          <label for="cSlider">Konsentrasi C₀: <b id="cText">300</b> mg/L</label>
+          <div class="slider-row">
+            <input type="range" id="cSlider" min="50" max="1000" step="10" value="300" />
+            <input type="number" id="cNum" min="50" max="1000" step="10" value="300" />
+          </div>
+          <div class="range-meta"><span>influen sedimen</span><span>mg/L</span></div>
+        </div>
+
+        <div class="input-field">
+          <label for="nSlider">Kompartemen N: <b id="nText">2</b></label>
+          <div class="slider-row">
+            <input type="range" id="nSlider" min="1" max="8" step="1" value="2" />
+            <input type="number" id="nNum" min="1" max="8" step="1" value="2" />
+          </div>
+          <div class="range-meta"><span>jumlah kantong</span><span>unit</span></div>
+        </div>
+
+        <div class="input-field">
+          <label for="hSlider">Kedalaman h: <b id="hText">2,0</b> m</label>
+          <div class="slider-row">
+            <input type="range" id="hSlider" min="0.5" max="5" step="0.1" value="2" />
+            <input type="number" id="hNum" min="0.5" max="5" step="0.1" value="2" />
+          </div>
+          <div class="range-meta"><span>kedalaman air rencana</span><span>m</span></div>
+        </div>
+
+        <div class="auto-field">
+          <label for="vPlanNum">Kecepatan v: <b id="vPlanText">0,15</b> m/s</label>
+          <input type="hidden" id="vPlanSlider" value="0.15" />
+          <input type="number" class="readonly-box" id="vPlanNum" min="0.05" max="0.30" step="0.01" value="0.15" readonly />
+          <div class="range-meta"><span>kecepatan aliran rencana</span><span>m/s</span></div>
+        </div>
+
+        <div class="auto-field">
+          <label for="wNum">Kecepatan Endap w: <b id="wText">1,10</b> mm/s</label>
+          <input type="hidden" id="wSlider" value="1.1" />
+          <input type="number" class="readonly-box" id="wNum" min="0.1" max="10" step="0.1" value="1.1" readonly />
+          <div class="range-meta"><span>Vs efektif sedimen</span><span>mm/s</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="top-right">
+      <div class="section-title"><span>2</span> Ringkasan Hasil</div>
+      <div class="result-grid" id="resultGrid"></div>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="section-title"><span>3</span> Status & Rekomendasi</div>
+    <div class="status-box">
+      <div class="status-main" id="statusMain">
+        <div class="small">Status Desain</div>
+        <div class="big" id="statusTitle">—</div>
+      </div>
+      <div class="reco">
+        <b>Catatan pembacaan:</b>
+        <ul id="recoList"></ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="section-title"><span>4</span> Nomogram Desain — Efisiensi Perangkap Halus</div>
+    <p class="help">Nomogram ini dibuat mengikuti tampilan referensi: kurva lebih rapi, area rekomendasi lebih jelas, benchmark TE ≥ 82% tetap terlihat, dan semua kurva dijaga tetap berada di dalam area grafik.</p>
+    <div class="nomogram-card">
+      <div class="chart-head">
+        <div>
+          <h3><span class="badge" style="margin-right:8px">NOMOGRAM</span>Fine Cohesive Trapping Efficiency (TE<sub>fine</sub>, %) vs. Chamber Width Expansion Ratio</h3>
+          <div class="chart-note">Garis putus-putus merah menunjukkan benchmark optimasi TE ≥ 82%. Area biru muda menunjukkan ruang desain yang direkomendasikan.</div>
+        </div>
+      </div>
+      <canvas id="chartNomogram" class="nomogram-canvas"></canvas>
+      <div class="legend" style="margin-top:18px">
+        <span class="chip"><span class="dot" style="background:#2563eb"></span>Q 1,5 m³/s</span>
+        <span class="chip"><span class="dot" style="background:#15803d"></span>Q 2,5 m³/s</span>
+        <span class="chip"><span class="dot" style="background:#b45309"></span>Q 3,5 m³/s</span>
+        <span class="chip"><span class="dot" style="background:#dc2626"></span>Q 5,0 m³/s</span>
+        <span class="chip"><span class="dot" style="background:#7c3aed"></span>Kurva debit input, jika berbeda dari kurva acuan</span>
+      </div>
+    </div>
+  </section>
+
+  
+  
+  <section class="panel">
+    <div class="section-title"><span>5</span> Ringkasan Tabel dengan Perhitungan Rumus</div>
+
+    <div class="all-charts-card">
+      <div class="mini-chart-grid">
+        <div class="mini-chart">
+          <div class="chart-head">
+            <div>
+              <h3>1. Efisiensi Pengendapan η vs Debit Q</h3>
+              <div class="chart-note">Semakin tinggi η, semakin baik kemampuan pengendapan.</div>
+            </div>
+          </div>
+          <canvas id="chartG1"></canvas>
+        </div>
+
+        <div class="mini-chart">
+          <div class="chart-head">
+            <div>
+              <h3>2. Kecepatan Aliran V vs Debit Q</h3>
+              <div class="chart-note">Garis merah putus-putus = batas kritis 0,10 m/s.</div>
+            </div>
+          </div>
+          <canvas id="chartG2"></canvas>
+        </div>
+
+        <div class="mini-chart">
+          <div class="chart-head">
+            <div>
+              <h3>3. Waktu Retensi T vs Debit Q</h3>
+              <div class="chart-note">Semakin besar T, semakin lama air berada di dalam bangunan pengendap.</div>
+            </div>
+          </div>
+          <canvas id="chartG3"></canvas>
+        </div>
+
+        <div class="mini-chart">
+          <div class="chart-head">
+            <div>
+              <h3>4. Karakteristik Sedimen: Vs vs D₅₀</h3>
+              <div class="chart-note">Panel ini menampilkan hubungan kecepatan pengendapan terhadap ukuran butiran sedimen.</div>
+            </div>
+          </div>
+          <canvas id="chartG4"></canvas>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="info-section">
+    <div class="section-title"><span>6</span> Informasi</div>
+    <div class="info-accordion">
+      <details>
+        <summary>Parameter input dan output</summary>
+        <div class="accordion-body">
+          <div class="info-grid">
+            <div class="info-card">
+              <h3>Parameter Input</h3>
+              <ul>
+                <li><b>Q</b> = debit rencana yang dimasukkan user, satuan m³/s.</li>
+                <li><b>Jenis sedimen</b> = pilihan material dominan: lanau lunak, lanau sedang, clay, atau lanau padat.</li>
+                <li><b>D₅₀</b> = diameter butiran median. Nilai ini dipakai untuk membaca karakteristik kecepatan pengendapan.</li>
+                <li><b>C₀</b> = konsentrasi sedimen masuk/influen, satuan mg/L.</li>
+                <li><b>N</b> = jumlah kompartemen paralel.</li>
+                <li><b>h</b> = kedalaman air rencana, satuan m.</li>
+                <li><b>v</b> = kecepatan aliran rencana, satuan m/s.</li>
+                <li><b>w</b> = kecepatan endap efektif sedimen, input dalam mm/s lalu dikonversi ke m/s.</li>
+              </ul>
+            </div>
+            <div class="info-card">
+              <h3>Parameter Output</h3>
+              <ul>
+                <li><b>As</b> = luas permukaan kolam minimum, dihitung dari Q/w.</li>
+                <li><b>A</b> = luas penampang basah, dihitung dari Q/v.</li>
+                <li><b>Btotal</b> = lebar total kantong lumpur, dihitung dari Q/(v×h).</li>
+                <li><b>Bkomp</b> = lebar per kompartemen, dihitung dari Btotal/N.</li>
+                <li><b>L</b> = panjang kantong lumpur, dihitung dari As/Btotal.</li>
+                <li><b>L/B</b> = rasio dimensi terhadap lebar total.</li>
+                <li><b>T</b> = waktu retensi, dihitung dari volume air aktif/Q.</li>
+                <li><b>η</b> = efisiensi pengendapan.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <details>
+        <summary>Rumus yang digunakan</summary>
+        <div class="accordion-body">
+          <div class="formula-table-wrap" style="margin-top:16px">
+            <table class="formula-table">
+              <thead>
+                <tr>
+                  <th>Komponen</th>
+                  <th>Rumus / Batas</th>
+                  <th>Fungsi dalam Web</th>
+                  <th>Catatan Pembacaan</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td><b>Debit Aliran Rencana</b></td><td><span class="formula-code">Q (m³/s) = input user</span></td><td>Debit utama untuk seluruh perhitungan.</td><td>Diubah melalui slider/input angka.</td></tr>
+                <tr><td><b>D₅₀ / Jenis Sedimen</b></td><td><span class="formula-code">D₅₀ (mm) = input pilihan sedimen</span></td><td>Menentukan rentang sedimen dan referensi grafik Vs vs D₅₀.</td><td>w efektif tetap dapat diinput manual.</td></tr>
+                <tr><td><b>Konsentrasi Sedimen Masuk</b></td><td><span class="formula-code">C₀ (mg/L) = input user</span></td><td>Disimpan sebagai parameter influen sedimen.</td><td>Tidak dimunculkan lagi sebagai kartu hasil utama.</td></tr>
+                <tr><td><b>Jumlah Kompartemen Paralel</b></td><td><span class="formula-code">N = input user</span></td><td>Menentukan pembagian lebar kantong lumpur.</td><td>Kompartemen dianggap paralel/melintang.</td></tr>
+                <tr><td><b>Kedalaman Air Rencana</b></td><td><span class="formula-code">h (m) = input user</span></td><td>Dipakai untuk menghitung Btotal, volume, T, dan η.</td><td>Simbol kedalaman ditulis h kecil.</td></tr>
+                <tr><td><b>Kecepatan Aliran Rencana</b></td><td><span class="formula-code">v otomatis dari jenis sedimen</span></td><td>Lanau padat 0,20; lanau sedang 0,15; lanau lunak 0,10; clay 0,08 m/s.</td><td>Dipakai untuk menghitung A, Btotal, dan η.</td></tr>
+                <tr><td><b>Kecepatan Endap Efektif</b></td><td><span class="formula-code">w otomatis dari jenis sedimen</span></td><td>Lanau padat 2,10; lanau sedang 1,10; lanau lunak 0,65; clay 0,30 mm/s.</td><td>Untuk perhitungan As dan η, w dikonversi ke m/s.</td></tr>
+                <tr><td><b>Luas Permukaan Kolam Minimum</b></td><td><span class="formula-code">As = Q / w</span></td><td>Menghitung kebutuhan luas permukaan minimum.</td><td>w wajib dalam m/s.</td></tr>
+                <tr><td><b>Luas Penampang Basah</b></td><td><span class="formula-code">A = Q / v</span></td><td>Menghitung luas penampang aliran basah.</td><td>Dengan asumsi penampang rata-rata.</td></tr>
+                <tr><td><b>Lebar Kantong Lumpur</b></td><td><span class="formula-code">Btotal = Q / (v × h)</span></td><td>Menghitung lebar total kantong lumpur.</td><td>Sama dengan A/h.</td></tr>
+                <tr><td><b>Lebar per Kompartemen</b></td><td><span class="formula-code">Bkomp = Btotal / N</span></td><td>Menghitung lebar tiap kompartemen paralel.</td><td>Panjang kompartemen tetap mengikuti L.</td></tr>
+                <tr><td><b>Panjang Kantong Lumpur</b></td><td><span class="formula-code">L = As / Btotal</span></td><td>Menghitung panjang kantong berdasarkan luas permukaan minimum.</td><td>Ini mengganti rumus lama L = 8B.</td></tr>
+                <tr><td><b>Rasio Dimensi</b></td><td><span class="formula-code">L/B = L / Btotal</span></td><td>Mengecek proporsi panjang terhadap lebar total.</td><td>Ditampilkan sebagai x : 1.</td></tr>
+                <tr><td><b>Waktu Retensi</b></td><td><span class="formula-code">T = Vair / Q; Vair = L × Btotal × h</span></td><td>Menghitung lama tinggal air di kantong lumpur.</td><td>Hasil dikonversi menjadi menit.</td></tr>
+                <tr><td><b>Efisiensi Endapan</b></td><td><span class="formula-code">η = 100 × (1 − exp(−wL/(vh)))</span></td><td>Menghitung efisiensi pengendapan sesuai tabel.</td><td>w dalam m/s, v dalam m/s, h dan L dalam m.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </details>
+
+      <details>
+        <summary>Catatan desain</summary>
+        <div class="accordion-body">
+          <div class="info-card" style="margin-top:16px">
+            <p>Output web ini sebaiknya dianggap sebagai <b>desain awal</b>. Untuk perencanaan final, hasil perlu divalidasi lagi dengan data lapangan, data laboratorium sedimen, dan batasan geometri lokasi.</p>
+            <div class="pill-row">
+              <span class="pill">Target L/B ≥ 8</span>
+              <span class="pill">Cek V ≤ 0,10 m/s</span>
+              <span class="pill">η lebih besar lebih baik</span>
+              <span class="pill">Vs mengikuti D₅₀</span>
+              <span class="pill">As = Q/w</span><span class="pill">A = Q/v</span>
+              <span class="pill">Bkomp = Btotal/N</span>
+            </div>
+          </div>
+        </div>
+      </details>
+    </div>
+  </section>
+
+</div>
+</main>
+
+<script>
+let TABLE = [
+  {Q:1.0,  L:154.10, B:10.54, h:1.37, V:0.070, T:37.0, eta:27.2},
+  {Q:2.0,  L:203.33, B:14.91, h:1.68, V:0.080, T:42.5, eta:25.6},
+  {Q:3.0,  L:239.13, B:18.26, h:1.90, V:0.090, T:46.1, eta:24.7},
+  {Q:4.0,  L:268.30, B:21.09, h:2.07, V:0.090, T:48.8, eta:24.1},
+  {Q:5.0,  L:293.35, B:23.58, h:2.21, V:0.100, T:51.0, eta:23.6},
+  {Q:6.0,  L:315.54, B:25.83, h:2.34, V:0.100, T:52.9, eta:23.3},
+  {Q:7.5,  L:345.00, B:28.88, h:2.50, V:0.103, T:55.3, eta:22.8},
+  {Q:9.0,  L:371.10, B:31.63, h:2.64, V:0.108, T:57.4, eta:22.5},
+  {Q:10.0, L:387.07, B:33.34, h:2.73, V:0.110, T:58.6, eta:22.2},
+  {Q:12.0, L:416.36, B:36.52, h:2.88, V:0.113, T:60.8, eta:21.9},
+  {Q:15.0, L:455.23, B:40.84, h:3.08, V:0.120, T:63.6, eta:21.5},
+];
+
+const BASE_SHAPE_TABLE = [
+  {Q:1.0,  L:154.10, B:10.54, h:1.37, V:0.070, T:37.0, eta:27.2},
+  {Q:2.0,  L:203.33, B:14.91, h:1.68, V:0.080, T:42.5, eta:25.6},
+  {Q:3.0,  L:239.13, B:18.26, h:1.90, V:0.090, T:46.1, eta:24.7},
+  {Q:4.0,  L:268.30, B:21.09, h:2.07, V:0.090, T:48.8, eta:24.1},
+  {Q:5.0,  L:293.35, B:23.58, h:2.21, V:0.100, T:51.0, eta:23.6},
+  {Q:6.0,  L:315.54, B:25.83, h:2.34, V:0.100, T:52.9, eta:23.3},
+  {Q:7.5,  L:345.00, B:28.88, h:2.50, V:0.103, T:55.3, eta:22.8},
+  {Q:9.0,  L:371.10, B:31.63, h:2.64, V:0.108, T:57.4, eta:22.5},
+  {Q:10.0, L:387.07, B:33.34, h:2.73, V:0.110, T:58.6, eta:22.2},
+  {Q:12.0, L:416.36, B:36.52, h:2.88, V:0.113, T:60.8, eta:21.9},
+  {Q:15.0, L:455.23, B:40.84, h:3.08, V:0.120, T:63.6, eta:21.5},
+];
+
+function generateTable(hPlan,vPlan,wMS){
+  // Rumus disesuaikan dengan tabel “Cara Perhitungan Parameter Input-Output”:
+  // A  = Q / v
+  // Btotal = Q / (v × h) = A / h
+  // Bkomp = Btotal / N (dihitung pada kartu hasil)
+  // As = Q / w  (w wajib dalam m/s)
+  // L  = As / Btotal
+  // T  = (L × Btotal × h) / Q / 60  (menit)
+  // η  = 100 × (1 − exp(−(w × L)/(v × h)))
+  return [1,2,3,4,5,6,7.5,9,10,12,15].map(Q=>{
+    const A  = Q / vPlan;                 // luas penampang basah (m²)
+    const B  = Q / (vPlan * hPlan);       // lebar total kantong lumpur (m)
+    const As = Q / wMS;                   // luas permukaan kolam minimum (m²)
+    const L  = As / B;                    // panjang kantong lumpur (m)
+    const volume = L * B * hPlan;         // volume air aktif (m³)
+    const T = (volume / Q) / 60;          // waktu retensi (menit)
+    const eta = Math.max(0, Math.min(99.5, 100 * (1 - Math.exp(-(wMS * L) / (vPlan * hPlan)))));
+    return {Q,A,As,L,B,h:hPlan,V:vPlan,T,eta,volume};
+  });
+}
+
+const SED_PROFILES = {
+  // wmm dan vPlan otomatis mengikuti tabel jenis sedimen yang digunakan pada input.
+  lanau_padat:  {d1:0.030, d2:0.060, wmm:2.10, vPlan:0.20, label:'Lanau Padat'},
+  lanau_sedang: {d1:0.020, d2:0.050, wmm:1.10, vPlan:0.15, label:'Lanau Sedang'},
+  lanau_lunak:  {d1:0.010, d2:0.020, wmm:0.65, vPlan:0.10, label:'Lanau Lunak'},
+  clay:         {d1:0.001, d2:0.010, wmm:0.30, vPlan:0.08, label:'Lempung / Clay'},
+};
+
+function applySedimentDefaults(){
+  const sed=document.getElementById('sedType').value;
+  const sp=SED_PROFILES[sed] || SED_PROFILES.lanau_sedang;
+  const vSlider=document.getElementById('vPlanSlider'), vNum=document.getElementById('vPlanNum');
+  const wSlider=document.getElementById('wSlider'), wNum=document.getElementById('wNum');
+  vSlider.value=sp.vPlan; vNum.value=sp.vPlan;
+  wSlider.value=sp.wmm; wNum.value=sp.wmm;
+  document.getElementById('vPlanText').textContent=rup(sp.vPlan,2);
+  document.getElementById('wText').textContent=rup(sp.wmm,2);
+  return sp;
+}
+
+const VS_DATA = [
+  {d:0.001, vs:0.000030},{d:0.002, vs:0.000100},{d:0.005, vs:0.000600},
+  {d:0.010, vs:0.003000},{d:0.020, vs:0.010000},{d:0.030, vs:0.015000},
+  {d:0.050, vs:0.015000},{d:0.060, vs:0.040000},{d:0.100, vs:0.090000},{d:0.200, vs:0.220000},
+];
+
+function rup(v,n=1){return Number(v).toFixed(n).replace('.',',')}
+function interp(Q){
+  if(Q<=TABLE[0].Q) return {...TABLE[0],Q};
+  if(Q>=TABLE[TABLE.length-1].Q) return {...TABLE[TABLE.length-1],Q};
+  for(let i=0;i<TABLE.length-1;i++){
+    const a=TABLE[i], b=TABLE[i+1];
+    if(Q>=a.Q && Q<=b.Q){
+      const t=(Q-a.Q)/(b.Q-a.Q), lr=(x,y)=>x+t*(y-x);
+      return {Q,A:lr(a.A,b.A),As:lr(a.As,b.As),L:lr(a.L,b.L),B:lr(a.B,b.B),h:lr(a.h,b.h),V:lr(a.V,b.V),T:lr(a.T,b.T),eta:lr(a.eta,b.eta)};
+    }
+  }
+}
+
+function interpFrom(arr,Q){
+  if(Q<=arr[0].Q) return {...arr[0],Q};
+  if(Q>=arr[arr.length-1].Q) return {...arr[arr.length-1],Q};
+  for(let i=0;i<arr.length-1;i++){
+    const a=arr[i], b=arr[i+1];
+    if(Q>=a.Q && Q<=b.Q){
+      const t=(Q-a.Q)/(b.Q-a.Q), lr=(x,y)=>x+t*(y-x);
+      const out={Q};
+      Object.keys(a).forEach(k=>{ if(k!=='Q'){ out[k]=lr(a[k],b[k]); } });
+      return out;
+    }
+  }
+}
+function makeTrendSeries(cur){
+  const baseAtQ = interpFrom(BASE_SHAPE_TABLE, cur.Q);
+  return BASE_SHAPE_TABLE.map(d=>({
+    Q: d.Q,
+    eta: Math.max(0, Math.min(99.5, cur.eta + (d.eta - baseAtQ.eta))),
+    V: Math.max(0.04, cur.V + (d.V - baseAtQ.V)),
+    T: Math.max(1, cur.T + (d.T - baseAtQ.T))
+  }));
+}
+function setupCanvas(id){
+  const c=document.getElementById(id);
+  const dpr=window.devicePixelRatio||1;
+  const rect=c.getBoundingClientRect();
+  const ch=300;
+  c.width=rect.width*dpr;c.height=ch*dpr;c.style.height=ch+'px';
+  const ctx=c.getContext('2d');ctx.setTransform(dpr,0,0,dpr,0,0);
+  return {c,ctx,w:rect.width,h:ch};
+}
+function niceMax(v, step=50){return Math.ceil(v/step)*step;}
+function niceMin(v, step=5){return Math.floor(v/step)*step;}
+function buildTicks(min,max,step){const out=[]; for(let v=min; v<=max+1e-9; v+=step) out.push(Number(v.toFixed(6))); return out;}
+function drawBase(ctx,w,h,{xMin,xMax,yMin,yMax,xLabel,yLabel,yTicks,xTicks,xFormat=null,yFormat=null}){
+  const p={l:54,r:24,t:22,b:72}; const W=w-p.l-p.r,H=h-p.t-p.b;
+  const fmtX=xFormat || (v=>String(v).replace('.',','));
+  const fmtY=yFormat || (v=>String(v).replace('.',','));
+  ctx.clearRect(0,0,w,h); ctx.fillStyle='#fbfdff'; ctx.fillRect(p.l,p.t,W,H);
+  ctx.strokeStyle='#e5e7eb'; ctx.lineWidth=1;
+  xTicks.forEach(v=>{const x=p.l+(v-xMin)/(xMax-xMin)*W;ctx.beginPath();ctx.moveTo(x,p.t);ctx.lineTo(x,p.t+H);ctx.stroke();});
+  yTicks.forEach(v=>{const y=p.t+H-(v-yMin)/(yMax-yMin)*H;ctx.beginPath();ctx.moveTo(p.l,y);ctx.lineTo(p.l+W,y);ctx.stroke();});
+  ctx.strokeStyle='#9ca3af';ctx.lineWidth=1.4;ctx.beginPath();ctx.moveTo(p.l,p.t);ctx.lineTo(p.l,p.t+H);ctx.lineTo(p.l+W,p.t+H);ctx.stroke();
+  ctx.fillStyle='#6b7280';ctx.font='11px Inter';ctx.textAlign='center';
+  xTicks.forEach(v=>{const x=p.l+(v-xMin)/(xMax-xMin)*W;ctx.fillText(fmtX(v),x,p.t+H+18)});
+  ctx.textAlign='right';yTicks.forEach(v=>{const y=p.t+H-(v-yMin)/(yMax-yMin)*H;ctx.fillText(fmtY(v),p.l-7,y+4)});
+  ctx.fillStyle='#374151';ctx.font='bold 12px Inter';ctx.textAlign='center';ctx.fillText(xLabel,p.l+W/2,h-20);
+  ctx.save();ctx.translate(14,p.t+H/2);ctx.rotate(-Math.PI/2);ctx.fillText(yLabel,0,0);ctx.restore();
+  return {p,W,H,sx:v=>p.l+(v-xMin)/(xMax-xMin)*W,sy:v=>p.t+H-(v-yMin)/(yMax-yMin)*H};
+}
+function line(ctx,pts,color,dash=[]){ctx.save();ctx.strokeStyle=color;ctx.lineWidth=2.5;ctx.setLineDash(dash);ctx.beginPath();pts.forEach((p,i)=>i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]));ctx.stroke();ctx.restore();}
+function smoothLine(ctx,pts,color,dash=[],lw=2.5){
+  if(!pts || pts.length<2){ return; }
+  if(pts.length===2){ line(ctx,pts,color,dash); return; }
+  ctx.save();
+  ctx.strokeStyle=color;
+  ctx.lineWidth=lw;
+  ctx.setLineDash(dash);
+  ctx.beginPath();
+  ctx.moveTo(pts[0][0], pts[0][1]);
+  for(let i=0;i<pts.length-1;i++){
+    const p0 = i>0 ? pts[i-1] : pts[i];
+    const p1 = pts[i];
+    const p2 = pts[i+1];
+    const p3 = i !== pts.length-2 ? pts[i+2] : p2;
+    const cp1x = p1[0] + (p2[0] - p0[0]) / 6;
+    const cp1y = p1[1] + (p2[1] - p0[1]) / 6;
+    const cp2x = p2[0] - (p3[0] - p1[0]) / 6;
+    const cp2y = p2[1] - (p3[1] - p1[1]) / 6;
+    ctx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, p2[0], p2[1]);
+  }
+  ctx.stroke();
+  ctx.restore();
+}
+function point(ctx,x,y,color,r=5){ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fillStyle=color;ctx.fill();ctx.strokeStyle='white';ctx.lineWidth=2;ctx.stroke();}
+function smallPoint(ctx,x,y,color){ctx.beginPath();ctx.arc(x,y,2.7,0,Math.PI*2);ctx.fillStyle=color;ctx.fill();}
+function label(ctx,x,y,t,color,dy=-10,align='center'){ctx.save();ctx.font='bold 11px Inter';ctx.textAlign=align;const tw=ctx.measureText(t).width;let tx=x;if(align==='left') tx=x; else if(align==='right') tx=x; else tx=x; const ty=y+dy; const padX=5,padY=3; let left=tx-tw/2; if(align==='left') left=tx; if(align==='right') left=tx-tw; ctx.fillStyle='rgba(255,255,255,0.9)'; ctx.fillRect(left-padX,ty-11-padY,tw+padX*2,14+padY*2); ctx.strokeStyle='rgba(255,255,255,0.95)'; ctx.lineWidth=1; ctx.strokeRect(left-padX,ty-11-padY,tw+padX*2,14+padY*2); ctx.fillStyle=color; ctx.fillText(t,tx,ty); ctx.restore();}
+
+function drawDim(cur){
+  const {ctx,w,h}=setupCanvas('chartDim');
+  const lb = cur.L / cur.B;
+  const eta = cur.eta;
+  const xMin=10, xMax=22, yMin=20, yMax=100;
+  const a=drawBase(ctx,w,h,{xMin,xMax,yMin,yMax,xLabel:'Rasio Dimensi Panjang terhadap Lebar Kantong (L/B)',yLabel:'Fine Cohesive Trapping Efficiency (TE$_{cohesive}$, %)',xTicks:[10,11,12,13,14,15,16,17,18,19,20,21,22],yTicks:[20,30,40,50,60,70,80,90,100],yFormat:v=>rup(v,0)});
+  // major + minor grid
+  ctx.strokeStyle='rgba(229,231,235,.8)'; ctx.lineWidth=0.8;
+  for(let xv=10; xv<=22; xv+=0.5){const x=a.sx(xv);ctx.beginPath();ctx.moveTo(x,a.p.t);ctx.lineTo(x,a.p.t+a.H);ctx.stroke();}
+  for(let yv=20; yv<=100; yv+=5){const y=a.sy(yv);ctx.beginPath();ctx.moveTo(a.p.l,y);ctx.lineTo(a.p.l+a.W,y);ctx.stroke();}
+  // benchmark
+  const yB=a.sy(82);ctx.strokeStyle='rgba(75,85,99,.8)';ctx.setLineDash([6,4]);ctx.beginPath();ctx.moveTo(a.p.l,yB);ctx.lineTo(a.p.l+a.W,yB);ctx.stroke();ctx.setLineDash([]);
+  ctx.fillStyle='#4b5563';ctx.font='bold 10px Inter';ctx.textAlign='left';ctx.fillText('Optimization Benchmark (TE >= 82%)',a.p.l+10,yB-8);
+  // curves
+  const k1=x=>100-82*Math.exp(-0.23*(x-10));
+  const k2=x=>100-86*Math.exp(-0.14*(x-10));
+  const k3=x=>100-92*Math.exp(-0.075*(x-10));
+  const curve=(fn,color,dash=[],lw=2.6)=>{ctx.save();ctx.strokeStyle=color;ctx.lineWidth=lw;ctx.setLineDash(dash);ctx.beginPath();for(let i=0;i<=260;i++){const x=xMin+(xMax-xMin)*i/260;const y=fn(x);const X=a.sx(x), Y=a.sy(y);if(i===0)ctx.moveTo(X,Y);else ctx.lineTo(X,Y);}ctx.stroke();ctx.restore();};
+  curve(k1,'#1f77b4',[],2.6); curve(k2,'#2ca02c',[8,4],2.4); curve(k3,'#ff7f0e',[8,3,2,3],2.4);
+  const refs=[
+    {x:17.1, y:k1(17.1), c:'#1f77b4', t:['Output 1','(L/B = 17.1)'], dx:8},
+    {x:18.4, y:k2(18.4), c:'#2ca02c', t:['Output 2','(L/B = 18.4)'], dx:0},
+    {x:13.8, y:k3(13.8), c:'#ff7f0e', t:['Output 3','(L/B = 13.8)'], dx:-16},
+  ];
+  refs.forEach(p=>{ctx.strokeStyle=p.c+'99';ctx.setLineDash([3,4]);ctx.beginPath();ctx.moveTo(a.sx(p.x),a.sy(20));ctx.lineTo(a.sx(p.x),a.sy(p.y));ctx.stroke();ctx.setLineDash([]);point(ctx,a.sx(p.x),a.sy(p.y),p.c,6);ctx.fillStyle=p.c;ctx.font='bold 10px Inter';ctx.textAlign='center';ctx.fillText(p.t[0],a.sx(p.x)+p.dx,a.sy(p.y)-16);ctx.fillText(p.t[1],a.sx(p.x)+p.dx,a.sy(p.y)-4);});
+  const mx=Math.max(xMin,Math.min(xMax,lb)); const my=Math.max(yMin,Math.min(yMax,eta));
+  ctx.strokeStyle='rgba(220,38,38,.7)';ctx.setLineDash([4,4]);ctx.beginPath();ctx.moveTo(a.sx(mx),a.sy(20));ctx.lineTo(a.sx(mx),a.sy(my));ctx.moveTo(a.sx(10),a.sy(my));ctx.lineTo(a.sx(mx),a.sy(my));ctx.stroke();ctx.setLineDash([]);
+  point(ctx,a.sx(mx),a.sy(my),'#dc2626',6);
+  label(ctx,a.sx(mx)+10,a.sy(my),`Input web: L/B ${rup(lb,1)}; η ${rup(eta,1)}%`,'#dc2626',-12,'left');
+}
+function drawV(cur){
+  const {ctx,w,h}=setupCanvas('chartV');
+  const sed=document.getElementById('sedType').value, sp=SED_PROFILES[sed];
+  const dMid=(sp.d1+sp.d2)/2;
+  const wmm=parseFloat(document.getElementById('wSlider').value);
+  const xMin=0.015, xMax=0.055, yMin=0, yMax=2.5;
+  const a=drawBase(ctx,w,h,{xMin,xMax,yMin,yMax,xLabel:'Ukuran Butiran Sedimen (d, mm)',yLabel:'Kecepatan Endap Efektif (w, mm/s)',xTicks:[0.015,0.020,0.025,0.030,0.035,0.040,0.045,0.050,0.055],yTicks:[0,0.5,1.0,1.5,2.0,2.5],xFormat:v=>rup(v,3),yFormat:v=>rup(v,1)});
+  ctx.strokeStyle='rgba(229,231,235,.75)';ctx.lineWidth=0.8;
+  for(let xv=0.015; xv<=0.055+1e-9; xv+=0.0025){const x=a.sx(Number(xv.toFixed(4)));ctx.beginPath();ctx.moveTo(x,a.p.t);ctx.lineTo(x,a.p.t+a.H);ctx.stroke();}
+  for(let yv=0; yv<=2.5; yv+=0.25){const y=a.sy(Number(yv.toFixed(2)));ctx.beginPath();ctx.moveTo(a.p.l,y);ctx.lineTo(a.p.l+a.W,y);ctx.stroke();}
+  const trend=[]; for(let i=0;i<=260;i++){const d=xMin+(xMax-xMin)*i/260; const y=32*d+0.32; trend.push([a.sx(d),a.sy(y)]);} line(ctx,trend,'#6b7280',[2,3],1.8);
+  const actual=[
+    {d:0.050,w:2.10,c:'#1f77b4',t:['Kondisi 1','(Tanpa Koagulasi)']},
+    {d:0.035,w:1.10,c:'#2ca02c',t:['Kondisi 2','(Batas Kohesif)']},
+    {d:0.025,w:0.65,c:'#ff7f0e',t:['Kondisi 3','(Efek Koagulasi Active)']},
+  ];
+  actual.forEach(p=>{point(ctx,a.sx(p.d),a.sy(p.w),p.c,6);ctx.fillStyle=p.c;ctx.font='bold 10px Inter';ctx.textAlign='center';ctx.fillText(p.t[0],a.sx(p.d),a.sy(p.w)-18);ctx.fillText(p.t[1],a.sx(p.d),a.sy(p.w)-6);});
+  const boundedD=Math.max(xMin,Math.min(xMax,dMid)); const boundedW=Math.max(yMin,Math.min(yMax,wmm));
+  point(ctx,a.sx(boundedD),a.sy(boundedW),'#7c3aed',6); label(ctx,a.sx(boundedD)+10,a.sy(boundedW),`Input: d≈${rup(dMid,3)} mm; w=${rup(wmm,2)} mm/s`,'#7c3aed',14,'left');
+}
+function drawEta(cur){
+  const {ctx,w,h}=setupCanvas('chartEta');
+  const lb=cur.L/cur.B; const eta=cur.eta;
+  const xMin=2, xMax=24, yMin=20, yMax=100;
+  const a=drawBase(ctx,w,h,{xMin,xMax,yMin,yMax,xLabel:'Rasio Dimensi Panjang terhadap Lebar Total Bangunan (L/B)',yLabel:'Fine Cohesive Trapping Efficiency (TE$_{cohesive}$, %)',xTicks:[2,4,6,8,10,12,14,16,18,20,22,24],yTicks:[20,30,40,50,60,70,80,90,100],yFormat:v=>rup(v,0)});
+  ctx.strokeStyle='rgba(229,231,235,.75)';ctx.lineWidth=0.8;
+  for(let xv=2; xv<=24; xv+=1){const x=a.sx(xv);ctx.beginPath();ctx.moveTo(x,a.p.t);ctx.lineTo(x,a.p.t+a.H);ctx.stroke();}
+  for(let yv=20; yv<=100; yv+=5){const y=a.sy(yv);ctx.beginPath();ctx.moveTo(a.p.l,y);ctx.lineTo(a.p.l+a.W,y);ctx.stroke();}
+  ctx.fillStyle='rgba(22,163,74,.06)'; ctx.fillRect(a.sx(2),a.p.t,a.sx(12)-a.sx(2),a.H);
+  const pts=[]; for(let i=0;i<=260;i++){const x=xMin+(xMax-xMin)*i/260; const y=25+73*Math.exp(-0.08*(x-2)); pts.push([a.sx(x),a.sy(y)]);} line(ctx,pts,'#167c3a',[],2.8);
+  ctx.fillStyle='#374151';ctx.font='11px Inter';ctx.textAlign='left';ctx.fillText('Zona Dimensi Efisien Kompartemen (Fr Stabil)',a.sx(3.2),a.p.t+16);
+  const mx=Math.max(xMin,Math.min(xMax,lb)); const my=Math.max(yMin,Math.min(yMax,eta));
+  ctx.strokeStyle='rgba(239,68,68,.85)';ctx.setLineDash([3,4]);ctx.beginPath();ctx.moveTo(a.sx(mx),a.sy(20));ctx.lineTo(a.sx(mx),a.sy(my));ctx.moveTo(a.sx(2),a.sy(my));ctx.lineTo(a.sx(mx),a.sy(my));ctx.stroke();ctx.setLineDash([]);
+  point(ctx,a.sx(mx),a.sy(my),'#dc2626',6.5);
+  ctx.fillStyle='#dc2626';ctx.font='bold 11px Inter';ctx.textAlign='left';
+  ctx.fillText('OUTPUT UTAMA',a.sx(mx)+14,a.sy(my)-18);
+  ctx.fillText(`L/B = ${rup(lb,1)}`,a.sx(mx)+14,a.sy(my)-4);
+  ctx.fillText(`TE = ${rup(eta,2)}%`,a.sx(mx)+14,a.sy(my)+10);
+}
+function drawVs(cur){
+  const {ctx,w,h}=setupCanvas('chartVs');
+  const xMin=1, xMax=15, yMin=0, yMax=Math.max(70, Math.ceil((Math.max(...TABLE.map(d=>d.T),cur.T)+5)/10)*10);
+  const xTicks=[1,2,3,4,5,6,7,8,9,10,12,15].filter(v=>v<=xMax);
+  const yTicks=[]; for(let y=0;y<=yMax;y+=10) yTicks.push(y);
+  const a=drawBase(ctx,w,h,{xMin,xMax,yMin,yMax,xLabel:'Debit Aliran Rencana Q (m³/s)',yLabel:'Waktu Retensi T (menit)',xTicks,yTicks,yFormat:v=>rup(v,0)});
+  const pts=TABLE.map(d=>[a.sx(d.Q),a.sy(d.T)]); line(ctx,pts,'#0f766e',[],2.5); TABLE.forEach(d=>smallPoint(ctx,a.sx(d.Q),a.sy(d.T),'#0f766e'));
+  const mx=a.sx(cur.Q), my=a.sy(cur.T); point(ctx,mx,my,'#dc2626',6); label(ctx,mx+10,my,`Input: T = ${rup(cur.T,1)} menit`,'#dc2626',-12,'left');
+  ctx.fillStyle='#0f766e'; ctx.font='bold 10px Inter'; ctx.textAlign='left'; ctx.fillText('Kurva hasil perhitungan web',a.p.l+8,a.p.t+14);
+}
+
+function computeNomogram(Q_val, nPts=90){
+  const Vs = 0.015;
+  const alpha = 18.5;
+  const k = 1.6;
+  const pts=[];
+  for(let i=0;i<=nPts;i++){
+    const w=1.5+(5.0-1.5)*i/nPts;
+    const te=(1-Math.exp(-Vs*Math.pow(w,k)*alpha/Q_val))*100;
+    pts.push({w,te:Math.min(te,99.5)});
+  }
+  return pts;
+}
+function setupCanvasNomogram(){
+  const c=document.getElementById('chartNomogram');
+  const dpr=window.devicePixelRatio||1;
+  const rect=c.getBoundingClientRect();
+  const ch=500;
+  c.width=rect.width*dpr;c.height=ch*dpr;c.style.height=ch+'px';
+  const ctx=c.getContext('2d');ctx.setTransform(dpr,0,0,dpr,0,0);
+  return {c,ctx,w:rect.width,h:ch};
+}
+function drawNomogram(cur){
+  const {ctx,w,h}=setupCanvasNomogram();
+  ctx.clearRect(0,0,w,h);
+  const pl=78, pr=40, pt=42, pb=120;
+  const W=w-pl-pr, H=h-pt-pb;
+  const xMin=1.5,xMax=5.0,yMin=10,yMax=150;
+  const sx=v=>pl+(v-xMin)/(xMax-xMin)*W;
+  const sy=v=>pt+H-(v-yMin)/(yMax-yMin)*H;
+  const clipY=v=>Math.max(yMin, Math.min(149.6, v));
+
+  // background
+  ctx.fillStyle='#fcfdff';
+  ctx.fillRect(pl,pt,W,H);
+
+  // recommended zone
+  ctx.fillStyle='rgba(59,130,246,.10)';
+  ctx.fillRect(sx(3.0),pt,sx(5.0)-sx(3.0),H);
+  ctx.fillStyle='#2563eb';
+  ctx.font='bold 12px Inter';
+  ctx.textAlign='center';
+  ctx.fillText('Ruang desain yang direkomendasikan',sx(4.0),pt+18);
+
+  // grid
+  ctx.strokeStyle='#e5e7eb';
+  ctx.lineWidth=1;
+  [1.5,2,2.5,3,3.5,4,4.5,5].forEach(v=>{const x=sx(v);ctx.beginPath();ctx.moveTo(x,pt);ctx.lineTo(x,pt+H);ctx.stroke();});
+  [10,20,30,40,50,60,70,80,90,100,110,120,130,140,150].forEach(v=>{const y=sy(v);ctx.beginPath();ctx.moveTo(pl,y);ctx.lineTo(pl+W,y);ctx.stroke();});
+
+  // clip plotting area so curves never leave the chart
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(pl,pt,W,H);
+  ctx.clip();
+
+  // benchmark
+  const yB=sy(82);
+  ctx.strokeStyle='rgba(185,28,28,.75)';
+  ctx.lineWidth=3.2;
+  ctx.setLineDash([7,5]);
+  ctx.beginPath();
+  ctx.moveTo(pl,yB);
+  ctx.lineTo(pl+W,yB);
+  ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle='rgba(185,28,28,.90)';
+  ctx.font='bold 12px Inter';
+  ctx.textAlign='left';
+  ctx.fillText('Benchmark Optimasi TE ≥ 82%',pl+10,yB-8);
+
+  // smooth curves approximating reference
+  const curveFns = {
+    1.5: x => clipY(99.1 - 0.4*Math.exp(-2.6*(x-1.5))),
+    2.5: x => clipY(98.7 + 0.9*(1-Math.exp(-1.6*(x-1.5)))),
+    3.5: x => clipY(95 + 4.7*(1-Math.exp(-1.35*(x-1.5)))),
+    5.0: x => clipY(64 + 36.0*(1-Math.exp(-1.55*(x-1.5))))
+  };
+
+  const styles = [
+    {Q:1.5,color:'#2563eb',dash:[],lw:2.2,label:'Q = 1,5 m³/s'},
+    {Q:2.5,color:'#15803d',dash:[],lw:2.2,label:'Q = 2,5 m³/s'},
+    {Q:3.5,color:'#b45309',dash:[],lw:2.2,label:'Q = 3,5 m³/s'},
+    {Q:5.0,color:'#7c3aed',dash:[],lw:2.2,label:'Q = 5,0 m³/s'}
+  ];
+
+  function renderCurve(fn,color,dash=[],lw=2.2){
+    ctx.save();
+    ctx.strokeStyle=color;
+    ctx.lineWidth=lw;
+    ctx.setLineDash(dash);
+    ctx.beginPath();
+    for(let i=0;i<=280;i++){
+      const x=xMin+(xMax-xMin)*i/280;
+      const y=clipY(fn(x));
+      const X=sx(x), Y=sy(y);
+      if(i===0) ctx.moveTo(X,Y); else ctx.lineTo(X,Y);
+    }
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  styles.forEach(s=>renderCurve(curveFns[s.Q],s.color,s.dash,s.lw));
+
+  // optional input curve if Q different from the 4 references
+  const q = cur.Q;
+  const same = styles.some(s=>Math.abs(s.Q-q)<0.001);
+  if(!same){
+    const inputFn = x => clipY(computeNomogram(q,120).reduce((best,p)=>
+      Math.abs(p.w-x)<Math.abs(best.w-x)?p:best
+    ).te);
+    renderCurve(inputFn,'#dc2626',[],2.2);
+
+    const xMark=3.0;
+    const yMark=clipY(inputFn(xMark));
+    const mx=sx(xMark), my=sy(yMark);
+    ctx.strokeStyle='rgba(220,38,38,.45)';
+    ctx.beginPath();
+    ctx.moveTo(mx,pt);
+    ctx.lineTo(mx,pt+H);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(mx,my,5,0,Math.PI*2);
+    ctx.fillStyle='#dc2626';
+    ctx.fill();
+    ctx.strokeStyle='#fff';
+    ctx.lineWidth=2;
+    ctx.stroke();
+    ctx.font='bold 11px Inter';
+    const labelTxt = `Q input = ${rup(q,1)} m³/s, TE ≈ ${rup(yMark,1)}%`;
+    const tw = ctx.measureText(labelTxt).width;
+    let tx = mx + 10, ty = my - 16;
+    if(tx + tw + 14 > pl + W) tx = mx - tw - 16;
+    if(ty < pt + 18) ty = my + 22;
+    ctx.fillStyle='rgba(255,255,255,.92)';
+    ctx.fillRect(tx-6,ty-14,tw+12,20);
+    ctx.strokeStyle='rgba(220,38,38,.25)';
+    ctx.strokeRect(tx-6,ty-14,tw+12,20);
+    ctx.fillStyle='#dc2626';
+    ctx.textAlign='left';
+    ctx.fillText(labelTxt,tx,ty);
+  }
+
+  ctx.restore();
+
+  // axes
+  ctx.strokeStyle='#94a3b8';
+  ctx.lineWidth=1.6;
+  ctx.beginPath();
+  ctx.moveTo(pl,pt);
+  ctx.lineTo(pl,pt+H);
+  ctx.lineTo(pl+W,pt+H);
+  ctx.stroke();
+
+  // tick labels
+  ctx.fillStyle='#6b7280';
+  ctx.font='10.5px Inter';
+  ctx.textAlign='center';
+  [1.5,2,2.5,3,3.5,4,4.5,5].forEach(v=>ctx.fillText(String(v).replace('.',','),sx(v),pt+H+20));
+  ctx.textAlign='right';
+  [10,20,30,40,50,60,70,80,90,100,110,120,130,140,150].forEach(v=>ctx.fillText(String(v),pl-8,sy(v)+4));
+
+  // axis titles
+  ctx.fillStyle='#374151';
+  ctx.font='bold 13px Inter';
+  ctx.textAlign='center';
+  ctx.fillText('Rasio Ekspansi Lebar Ruang  (W_basin / W_inlet)',pl+W/2,pt+H+48);
+  ctx.save();
+  ctx.translate(24,pt+H/2);
+  ctx.rotate(-Math.PI/2);
+  ctx.fillText('Efisiensi Perangkap Halus  TE_fine  (%)',0,0);
+  ctx.restore();
+
+  // footer note
+  ctx.fillStyle='#6b7280';
+  ctx.font='10.5px Inter';
+  ctx.textAlign='center';
+  ctx.fillText('Garis putus-putus merah: Benchmark Optimasi TE ≥ 82% | Rentang Sumbu-X: 1,5–5,0 | Kurva untuk Q = 1,5, 2,5, 3,5, 5,0 m³/s', pl+W/2, h-22);
+}
+
+
+function setupCanvasGabungan(){
+  const c=document.getElementById('chartGabungan');
+  const dpr=window.devicePixelRatio||1;
+  const rect=c.getBoundingClientRect();
+  const ch=410;
+  c.width=rect.width*dpr;c.height=ch*dpr;c.style.height=ch+'px';
+  const ctx=c.getContext('2d');ctx.setTransform(dpr,0,0,dpr,0,0);
+  return {c,ctx,w:rect.width,h:ch};
+}
+function drawGabunganAdvanced(cur){
+  const {ctx,w,h}=setupCanvasGabungan();
+  ctx.clearRect(0,0,w,h);
+  const pl=62, pr=150, pt=34, pb=58;
+  const W=w-pl-pr, H=h-pt-pb;
+  const xMin=0,xMax=16;
+  const axes={
+    dim:{min:0,max:520,color:'#2563eb',ticks:[0,100,200,300,400,500]},
+    eta:{min:18,max:30,color:'#0891b2',ticks:[20,22,24,26,28,30],off:0,label:'η (%)'},
+    v:{min:0.04,max:0.15,color:'#dc2626',ticks:[0.05,0.07,0.09,0.11,0.13],off:48,label:'V (m/s)'},
+    t:{min:30,max:70,color:'#b45309',ticks:[35,45,55,65],off:96,label:'T (menit)'}
+  };
+  const sx=v=>pl+(v-xMin)/(xMax-xMin)*W;
+  const sy=(v,a)=>pt+H-(v-a.min)/(a.max-a.min)*H;
+  ctx.fillStyle='#fbfdff';ctx.fillRect(pl,pt,W,H);
+  ctx.strokeStyle='#e5e7eb';ctx.lineWidth=1;
+  [0,2,4,6,8,10,12,14,16].forEach(v=>{const x=sx(v);ctx.beginPath();ctx.moveTo(x,pt);ctx.lineTo(x,pt+H);ctx.stroke();});
+  axes.dim.ticks.forEach(v=>{const y=sy(v,axes.dim);ctx.beginPath();ctx.moveTo(pl,y);ctx.lineTo(pl+W,y);ctx.stroke();});
+  const xQ=sx(cur.Q);ctx.strokeStyle='rgba(100,100,100,.18)';ctx.setLineDash([5,4]);ctx.beginPath();ctx.moveTo(xQ,pt);ctx.lineTo(xQ,pt+H);ctx.stroke();ctx.setLineDash([]);
+  function curve(arr,fn,color,dash=[],lw=2.3){ctx.save();ctx.strokeStyle=color;ctx.lineWidth=lw;ctx.setLineDash(dash);ctx.beginPath();arr.forEach((d,i)=>{const [x,y]=fn(d);i?ctx.lineTo(x,y):ctx.moveTo(x,y)});ctx.stroke();ctx.restore();}
+  function dot2(x,y,color,r=5){ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fillStyle=color;ctx.fill();ctx.strokeStyle='white';ctx.lineWidth=2;ctx.stroke();}
+  function txt(t,x,y,color,align='center'){ctx.fillStyle=color;ctx.font='bold 11px Inter';ctx.textAlign=align;ctx.fillText(t,x,y-10);}
+  // kurva dimensi kiri
+  curve(TABLE,d=>[sx(d.Q),sy(d.L,axes.dim)],'#2563eb',[],2.7);
+  curve(TABLE,d=>[sx(d.Q),sy(d.B*10,axes.dim)],'#b45309',[7,4],2.2);
+  curve(TABLE,d=>[sx(d.Q),sy(d.h*100,axes.dim)],'#15803d',[4,3],2.2);
+  dot2(xQ,sy(cur.L,axes.dim),'#2563eb');txt(`${rup(cur.L,1)} m`,xQ,sy(cur.L,axes.dim),'#2563eb');
+  dot2(xQ,sy(cur.B*10,axes.dim),'#b45309');txt(`B=${rup(cur.B,1)}`,xQ+22,sy(cur.B*10,axes.dim),'#b45309','left');
+  dot2(xQ,sy(cur.h*100,axes.dim),'#15803d');txt(`h=${rup(cur.h,2)}`,xQ+22,sy(cur.h*100,axes.dim),'#15803d','left');
+  // eta
+  curve(TABLE,d=>[sx(d.Q),sy(d.eta,axes.eta)],'#0891b2',[],2.5);
+  dot2(xQ,sy(cur.eta,axes.eta),'#0891b2');txt(`η=${rup(cur.eta,1)}%`,xQ+24,sy(cur.eta,axes.eta),'#0891b2','left');
+  // V dan Vkrit
+  const yvk=sy(0.10,axes.v);ctx.strokeStyle='rgba(220,38,38,.25)';ctx.setLineDash([6,4]);ctx.beginPath();ctx.moveTo(pl,yvk);ctx.lineTo(pl+W,yvk);ctx.stroke();ctx.setLineDash([]);
+  ctx.fillStyle='rgba(220,38,38,.55)';ctx.font='10px Inter';ctx.textAlign='right';ctx.fillText('V krit 0,10',pl+W-4,yvk-5);
+  curve(TABLE,d=>[sx(d.Q),sy(d.V,axes.v)],'#dc2626',[5,2],2.2);
+  dot2(xQ,sy(cur.V,axes.v),'#dc2626');txt(`V=${rup(cur.V,3)}`,xQ-22,sy(cur.V,axes.v),'#dc2626','right');
+  // T
+  curve(TABLE,d=>[sx(d.Q),sy(d.T,axes.t)],'#b45309',[3,2,1,2],2.2);
+  dot2(xQ,sy(cur.T,axes.t),'#b45309');ctx.fillStyle='#b45309';ctx.font='bold 11px Inter';ctx.textAlign='center';ctx.fillText(`T=${rup(cur.T,0)} mnt`,xQ,sy(cur.T,axes.t)+20);
+  // axes x + left
+  ctx.strokeStyle='#9ca3af';ctx.lineWidth=1.4;ctx.beginPath();ctx.moveTo(pl,pt);ctx.lineTo(pl,pt+H);ctx.lineTo(pl+W,pt+H);ctx.stroke();
+  ctx.fillStyle='#6b7280';ctx.font='11px Inter';ctx.textAlign='center';[0,2,4,6,8,10,12,14,16].forEach(v=>ctx.fillText(v,sx(v),pt+H+18));
+  ctx.fillStyle='#374151';ctx.font='bold 13px Inter';ctx.fillText('Debit Q (m³/s)',pl+W/2,pt+H+38);
+  ctx.fillStyle=axes.dim.color;ctx.font='11px Inter';ctx.textAlign='right';axes.dim.ticks.forEach(v=>ctx.fillText(v,pl-8,sy(v,axes.dim)+4));
+  ctx.save();ctx.translate(18,pt+H/2);ctx.rotate(-Math.PI/2);ctx.fillStyle=axes.dim.color;ctx.font='bold 12px Inter';ctx.textAlign='center';ctx.fillText('Dimensi: L (m) · B×10 · h×100',0,0);ctx.restore();
+  // right axes
+  [axes.eta,axes.v,axes.t].forEach(a=>{const rx=pl+W+a.off+14;ctx.strokeStyle=a.color;ctx.lineWidth=1.8;ctx.beginPath();ctx.moveTo(rx,pt);ctx.lineTo(rx,pt+H);ctx.stroke();ctx.fillStyle=a.color;ctx.font='10px Inter';ctx.textAlign='left';a.ticks.forEach(v=>{const y=sy(v,a);ctx.beginPath();ctx.moveTo(rx,y);ctx.lineTo(rx+5,y);ctx.stroke();ctx.fillText(String(v).replace('.',','),rx+8,y+4);});ctx.save();ctx.translate(rx+35,pt+H/2);ctx.rotate(Math.PI/2);ctx.fillStyle=a.color;ctx.font='bold 11px Inter';ctx.textAlign='center';ctx.fillText(a.label,0,0);ctx.restore();});
+  // inset Vs
+  const sed=document.getElementById('sedType').value, sp=SED_PROFILES[sed];
+  const iW=168,iH=118,iX=pl+W-178,iY=pt+H-128;
+  ctx.fillStyle='rgba(255,255,255,.95)';ctx.strokeStyle='#cbd5e1';ctx.lineWidth=1;ctx.fillRect(iX,iY,iW,iH);ctx.strokeRect(iX,iY,iW,iH);
+  const il=iX+42, ir=iX+iW-10, it=iY+18, ib=iY+iH-22, iw=ir-il, ih=ib-it;
+  const log=v=>Math.log10(v); const ix=v=>il+(log(v)-log(0.001))/(log(0.25)-log(0.001))*iw; const iy=v=>ib-(log(v)-log(0.000025))/(log(0.4)-log(0.000025))*ih;
+  ctx.strokeStyle='#e5e7eb';ctx.lineWidth=.7;[0.001,0.01,0.1].forEach(v=>{ctx.beginPath();ctx.moveTo(ix(v),it);ctx.lineTo(ix(v),ib);ctx.stroke();});[0.0001,0.001,0.01,0.1].forEach(v=>{ctx.beginPath();ctx.moveTo(il,iy(v));ctx.lineTo(ir,iy(v));ctx.stroke();});
+  ctx.strokeStyle='#94a3b8';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(il,it);ctx.lineTo(il,ib);ctx.lineTo(ir,ib);ctx.stroke();
+  ctx.fillStyle='rgba(37,99,235,.12)';const zx1=ix(sp.d1),zx2=ix(sp.d2);ctx.fillRect(zx1,it,zx2-zx1,ih);ctx.fillStyle='#2563eb';ctx.font='8px Inter';ctx.textAlign='center';ctx.fillText(sp.label,(zx1+zx2)/2,it+10);
+  curve(VS_DATA,d=>[ix(d.d),iy(d.vs)],'#6d28d9',[],2);
+  VS_DATA.forEach(d=>dot2(ix(d.d),iy(d.vs),'#6d28d9',2.4));
+  dot2((zx1+zx2)/2,iy((sp.wmm/1000)),'#2563eb',4);ctx.fillStyle='#2563eb';ctx.font='bold 8px Inter';ctx.textAlign='left';ctx.fillText(`Vs=${(sp.wmm/1000)}`,(zx1+zx2)/2+6,iy((sp.wmm/1000))+3);
+  ctx.fillStyle='#374151';ctx.font='bold 9px Inter';ctx.textAlign='left';ctx.fillText('Inset: Vs vs D₅₀',iX+6,iY+12);
+  ctx.fillStyle='#6b7280';ctx.font='8px Inter';ctx.textAlign='center';[0.001,0.01,0.1].forEach(v=>ctx.fillText(v,ix(v),ib+11));
+  ctx.strokeStyle='#cbd5e1';ctx.strokeRect(pl,pt,W,H);
+}
+
+
+function setupDarkCanvas(id, h=210){
+  const c=document.getElementById(id);
+  const dpr=window.devicePixelRatio||1;
+  const rect=c.getBoundingClientRect();
+  c.width=rect.width*dpr; c.height=h*dpr; c.style.height=h+'px';
+  const ctx=c.getContext('2d');
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  return {c,ctx,w:rect.width,h};
+}
+function darkBase(ctx,w,h,{xMin,xMax,yMin,yMax,xTicks,yTicks,xLabel,yLabel,xFmt=null,yFmt=null,pad=null}){
+  const p=pad||{l:54,r:18,t:18,b:38};
+  const W=w-p.l-p.r, H=h-p.t-p.b;
+  const sx=v=>p.l+(v-xMin)/(xMax-xMin)*W;
+  const sy=v=>p.t+H-(v-yMin)/(yMax-yMin)*H;
+  ctx.clearRect(0,0,w,h);
+  ctx.fillStyle='#0a1426';
+  ctx.fillRect(0,0,w,h);
+  ctx.fillStyle='#0b1629';
+  ctx.fillRect(p.l,p.t,W,H);
+
+  // major grid
+  ctx.strokeStyle='rgba(14,165,255,.12)';
+  ctx.lineWidth=1;
+  xTicks.forEach(v=>{const x=sx(v);ctx.beginPath();ctx.moveTo(x,p.t);ctx.lineTo(x,p.t+H);ctx.stroke();});
+  yTicks.forEach(v=>{const y=sy(v);ctx.beginPath();ctx.moveTo(p.l,y);ctx.lineTo(p.l+W,y);ctx.stroke();});
+
+  ctx.strokeStyle='rgba(14,165,255,.35)';
+  ctx.lineWidth=1.1;
+  ctx.beginPath(); ctx.moveTo(p.l,p.t); ctx.lineTo(p.l,p.t+H); ctx.lineTo(p.l+W,p.t+H); ctx.stroke();
+
+  const fx = xFmt || (v=>String(v).replace('.',','));
+  const fy = yFmt || (v=>String(v).replace('.',','));
+  ctx.fillStyle='#74a6e8';
+  ctx.font='11px Inter';
+  ctx.textAlign='center';
+  xTicks.forEach(v=>ctx.fillText(fx(v), sx(v), p.t+H+15));
+  ctx.textAlign='right';
+  yTicks.forEach(v=>ctx.fillText(fy(v), p.l-7, sy(v)+4));
+
+  ctx.fillStyle='#5b8bc7';
+  ctx.font='11px Inter';
+  ctx.textAlign='center';
+  ctx.fillText(xLabel, p.l+W/2, h-8);
+  ctx.save();
+  ctx.translate(14,p.t+H/2);
+  ctx.rotate(-Math.PI/2);
+  ctx.fillText(yLabel,0,0);
+  ctx.restore();
+  return {p,W,H,sx,sy};
+}
+function darkLine(ctx,pts,color,dash=[],lw=2.3){
+  ctx.save();
+  ctx.strokeStyle=color; ctx.lineWidth=lw; ctx.setLineDash(dash);
+  ctx.beginPath();
+  pts.forEach((pt,i)=> i?ctx.lineTo(pt[0],pt[1]):ctx.moveTo(pt[0],pt[1]));
+  ctx.stroke();
+  ctx.restore();
+}
+function darkPoint(ctx,x,y,color,r=4.5, stroke='#fff'){
+  ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2);
+  ctx.fillStyle=color; ctx.fill();
+  ctx.strokeStyle=stroke; ctx.lineWidth=1.8; ctx.stroke();
+}
+function darkLabel(ctx,x,y,t,color,dy=-10,align='center'){
+  ctx.save();
+  ctx.font='bold 12px Inter';
+  ctx.textAlign=align;
+  const tw=ctx.measureText(t).width;
+  let left=x-tw/2;
+  if(align==='left') left=x;
+  if(align==='right') left=x-tw;
+  const ty=y+dy;
+  ctx.fillStyle='rgba(8,18,35,.78)';
+  ctx.fillRect(left-5,ty-12,tw+10,18);
+  ctx.strokeStyle='rgba(14,165,255,.22)';
+  ctx.strokeRect(left-5,ty-12,tw+10,18);
+  ctx.fillStyle=color;
+  ctx.fillText(t,x,ty);
+  ctx.restore();
+}
+
+function drawProtoChart(cur){
+  const {ctx,w,h}=setupDarkCanvas('chartProto',210);
+  const yMax = Math.max(...TABLE.map(d=>Math.max(d.L,d.B*10,d.h*100)), cur.L, cur.B*10, cur.h*100);
+  const a = darkBase(ctx,w,h,{
+    xMin:0,xMax:16,yMin:0,yMax:Math.ceil((yMax+40)/50)*50,
+    xTicks:[0,3,6,9,12,15], yTicks:[0,100,200,300,400,500],
+    xLabel:'Q (m³/s)', yLabel:'Dimensi (m)'
+  });
+
+  const qx=a.sx(cur.Q);
+  ctx.strokeStyle='rgba(255,255,255,.28)';
+  ctx.setLineDash([5,4]);
+  ctx.beginPath(); ctx.moveTo(qx,a.p.t); ctx.lineTo(qx,a.p.t+a.H); ctx.stroke();
+  ctx.setLineDash([]);
+
+  const Lpts=TABLE.map(d=>[a.sx(d.Q),a.sy(d.L)]);
+  const Bpts=TABLE.map(d=>[a.sx(d.Q),a.sy(d.B*10)]);
+  const hpts=TABLE.map(d=>[a.sx(d.Q),a.sy(d.h*100)]);
+  darkLine(ctx,Lpts,'#12d5ff',[],2.4);
+  darkLine(ctx,Bpts,'#ffbf00',[],2.2);
+  darkLine(ctx,hpts,'#00f0c8',[],2.2);
+  Lpts.forEach(p=>darkPoint(ctx,p[0],p[1],'#12d5ff',2.2,'transparent'));
+  Bpts.forEach(p=>darkPoint(ctx,p[0],p[1],'#ffbf00',2.0,'transparent'));
+  hpts.forEach(p=>darkPoint(ctx,p[0],p[1],'#00f0c8',2.0,'transparent'));
+
+  darkPoint(ctx, qx, a.sy(cur.L), '#12d5ff', 5.5);
+  darkPoint(ctx, qx, a.sy(cur.B*10), '#ffbf00', 5.3);
+  darkPoint(ctx, qx, a.sy(cur.h*100), '#00f0c8', 5.3);
+  darkLabel(ctx,qx+10,a.sy(cur.L),`L ${rup(cur.L,2)} m`,'#12d5ff',-10,'left');
+  darkLabel(ctx,qx+10,a.sy(cur.B*10),`B ${rup(cur.B,2)} m`,'#ffbf00',12,'left');
+  darkLabel(ctx,qx+10,a.sy(cur.h*100),`h ${rup(cur.h,2)} m`,'#00f0c8',16,'left');
+
+  // mini legend
+  ctx.fillStyle='#12d5ff'; ctx.fillRect(58,4,18,3);
+  ctx.fillStyle='#d6e5ff'; ctx.font='11px Inter'; ctx.textAlign='left'; ctx.fillText('L (m)',80,9);
+  ctx.fillStyle='#ffbf00'; ctx.fillRect(126,4,18,3);
+  ctx.fillStyle='#d6e5ff'; ctx.fillText('B×10',148,9);
+  ctx.fillStyle='#00f0c8'; ctx.fillRect(188,4,18,3);
+  ctx.fillStyle='#d6e5ff'; ctx.fillText('h×100',210,9);
+}
+function drawEffChart(cur){
+  const {ctx,w,h}=setupDarkCanvas('chartEff',210);
+  const ymin = Math.floor((Math.min(...TABLE.map(d=>d.eta),cur.eta)-1)/2)*2;
+  const ymax = Math.ceil((Math.max(...TABLE.map(d=>d.eta),cur.eta)+1)/2)*2;
+  const ticks=[]; for(let v=ymax; v>=ymin; v-=2){}  // keep linter quiet
+  const yt=[]; for(let v=ymin; v<=ymax; v+=2) yt.push(Number(v.toFixed(1)));
+  const a = darkBase(ctx,w,h,{
+    xMin:0,xMax:16,yMin:ymin,yMax:ymax,
+    xTicks:[0,5,10,15], yTicks:yt,
+    xLabel:'Q (m³/s)', yLabel:'η (%)'
+  });
+  const pts=TABLE.map(d=>[a.sx(d.Q),a.sy(d.eta)]);
+  darkLine(ctx,pts,'#00f0c8',[],2.4);
+  pts.forEach(p=>darkPoint(ctx,p[0],p[1],'#00f0c8',2,'transparent'));
+  const qx=a.sx(cur.Q), qy=a.sy(cur.eta);
+  ctx.strokeStyle='rgba(255,255,255,.22)'; ctx.setLineDash([5,4]);
+  ctx.beginPath(); ctx.moveTo(qx,a.p.t); ctx.lineTo(qx,a.p.t+a.H); ctx.stroke(); ctx.setLineDash([]);
+  darkPoint(ctx,qx,qy,'#ffffff',5,'#0a1426');
+  darkLabel(ctx,qx,qy,`${rup(cur.eta,1)}%`,'#ffbf00',-10,'center');
+}
+function drawVelChart(cur){
+  const {ctx,w,h}=setupDarkCanvas('chartVel',210);
+  const ymax = Math.max(0.14, Math.ceil((Math.max(...TABLE.map(d=>d.V),cur.V)+0.01)*100)/100);
+  const yt=[0.06,0.08,0.10,0.12,0.14].filter(v=>v<=ymax+1e-9);
+  const a = darkBase(ctx,w,h,{
+    xMin:0,xMax:16,yMin:0.05,yMax:ymax,
+    xTicks:[0,5,10,15], yTicks:yt,
+    xLabel:'Q (m³/s)', yLabel:'V (m/s)',
+    yFmt:v=>String(v).replace('.',',')
+  });
+  // critical
+  const yc=a.sy(0.10);
+  ctx.strokeStyle='rgba(255,0,127,.55)';
+  ctx.setLineDash([4,4]); ctx.beginPath(); ctx.moveTo(a.p.l,yc); ctx.lineTo(a.p.l+a.W,yc); ctx.stroke(); ctx.setLineDash([]);
+  ctx.fillStyle='rgba(255,91,127,.85)'; ctx.font='11px Inter'; ctx.textAlign='left'; ctx.fillText('Vkrit=0,10',a.p.l+2,yc-4);
+  const pts=TABLE.map(d=>[a.sx(d.Q),a.sy(d.V)]);
+  darkLine(ctx,pts,'#ff5b7f',[],2.4);
+  pts.forEach(p=>darkPoint(ctx,p[0],p[1],'#ff5b7f',2.2,'transparent'));
+  const qx=a.sx(cur.Q), qy=a.sy(cur.V);
+  ctx.strokeStyle='rgba(255,255,255,.22)'; ctx.setLineDash([5,4]);
+  ctx.beginPath(); ctx.moveTo(qx,a.p.t); ctx.lineTo(qx,a.p.t+a.H); ctx.stroke(); ctx.setLineDash([]);
+  darkPoint(ctx,qx,qy,'#ffffff',5,'#0a1426');
+  darkLabel(ctx,qx,qy,`${rup(cur.V,3)}`,'#ffbf00',-10,'center');
+}
+function drawRetChart(cur){
+  const {ctx,w,h}=setupDarkCanvas('chartRet',210);
+  const ymin = Math.floor((Math.min(...TABLE.map(d=>d.T),cur.T)-5)/5)*5;
+  const ymax = Math.ceil((Math.max(...TABLE.map(d=>d.T),cur.T)+5)/5)*5;
+  const yt=[]; for(let v=ymin; v<=ymax; v+=5) yt.push(v);
+  const a = darkBase(ctx,w,h,{
+    xMin:0,xMax:16,yMin:ymin,yMax:ymax,
+    xTicks:[0,5,10,15], yTicks:yt,
+    xLabel:'Q (m³/s)', yLabel:'T (mnt)'
+  });
+  const pts=TABLE.map(d=>[a.sx(d.Q),a.sy(d.T)]);
+  darkLine(ctx,pts,'#ffbf00',[],2.4);
+  pts.forEach(p=>darkPoint(ctx,p[0],p[1],'#ffbf00',2.2,'transparent'));
+  const qx=a.sx(cur.Q), qy=a.sy(cur.T);
+  ctx.strokeStyle='rgba(255,255,255,.22)'; ctx.setLineDash([5,4]);
+  ctx.beginPath(); ctx.moveTo(qx,a.p.t); ctx.lineTo(qx,a.p.t+a.H); ctx.stroke(); ctx.setLineDash([]);
+  ctx.strokeStyle='rgba(255,255,255,.10)'; ctx.setLineDash([4,4]);
+  ctx.beginPath(); ctx.moveTo(a.p.l,qy); ctx.lineTo(qx,qy); ctx.stroke(); ctx.setLineDash([]);
+  darkPoint(ctx,qx,qy,'#ffffff',5,'#0a1426');
+  darkLabel(ctx,qx,qy,`${rup(cur.T,1)} mnt`,'#12d5ff',-10,'center');
+}
+function drawSedChart(cur){
+  const {ctx,w,h}=setupDarkCanvas('chartSed',210);
+  const sed=document.getElementById('sedType').value;
+  const sp=SED_PROFILES[sed];
+  const dMid=(sp.d1+sp.d2)/2;
+  const wms=parseFloat(document.getElementById('wSlider').value)/1000;
+  const log10=v=>Math.log(v)/Math.LN10;
+  const xMin=log10(0.001), xMax=log10(0.2), yMin=log10(0.00003), yMax=log10(0.3);
+
+  // custom dark log base
+  const p={l:62,r:18,t:18,b:42}, W=w-p.l-p.r, H=h-p.t-p.b;
+  const sx=v=>p.l+(log10(v)-xMin)/(xMax-xMin)*W;
+  const sy=v=>p.t+H-(log10(v)-yMin)/(yMax-yMin)*H;
+
+  ctx.clearRect(0,0,w,h);
+  ctx.fillStyle='#0a1426'; ctx.fillRect(0,0,w,h);
+  ctx.fillStyle='#0b1629'; ctx.fillRect(p.l,p.t,W,H);
+
+  const xticks=[0.001,0.01,0.05,0.1];
+  const yticks=[0.0001,0.001,0.01,0.1];
+  ctx.strokeStyle='rgba(14,165,255,.12)'; ctx.lineWidth=1;
+  xticks.forEach(v=>{const x=sx(v); ctx.beginPath(); ctx.moveTo(x,p.t); ctx.lineTo(x,p.t+H); ctx.stroke();});
+  yticks.forEach(v=>{const y=sy(v); ctx.beginPath(); ctx.moveTo(p.l,y); ctx.lineTo(p.l+W,y); ctx.stroke();});
+
+  // selected sediment zone
+  ctx.fillStyle='rgba(0,217,255,.08)';
+  ctx.fillRect(sx(sp.d1), p.t, sx(sp.d2)-sx(sp.d1), H);
+  ctx.strokeStyle='rgba(0,217,255,.35)';
+  ctx.setLineDash([4,4]);
+  ctx.strokeRect(sx(sp.d1), p.t, sx(sp.d2)-sx(sp.d1), H);
+  ctx.setLineDash([]);
+  ctx.fillStyle='#37d7ff'; ctx.font='11px Inter'; ctx.textAlign='center';
+  ctx.fillText(sp.label, (sx(sp.d1)+sx(sp.d2))/2, p.t+10);
+
+  ctx.strokeStyle='rgba(14,165,255,.35)'; ctx.lineWidth=1.1;
+  ctx.beginPath(); ctx.moveTo(p.l,p.t); ctx.lineTo(p.l,p.t+H); ctx.lineTo(p.l+W,p.t+H); ctx.stroke();
+  const pts=VS_DATA.map(d=>[sx(d.d), sy(d.vs)]);
+  darkLine(ctx,pts,'#b678ff',[],2.4);
+  pts.forEach(pt=>darkPoint(ctx,pt[0],pt[1],'#b678ff',2,'transparent'));
+
+  const mx=sx(dMid), my=sy(Math.max(VS_DATA[0].vs, wms));
+  darkPoint(ctx,mx,my,'#ffffff',5,'#0a1426');
+  darkLabel(ctx,mx+10,my,`Vs=${rup(wms,3)} m/s`,'#ffbf00',0,'left');
+
+  ctx.fillStyle='#74a6e8'; ctx.font='11px Inter'; ctx.textAlign='center';
+  xticks.forEach(v=>ctx.fillText(String(v), sx(v), p.t+H+15));
+  ctx.textAlign='right';
+  yticks.forEach(v=>ctx.fillText(String(v), p.l-7, sy(v)+4));
+  ctx.fillStyle='#5b8bc7'; ctx.textAlign='center';
+  ctx.fillText('D₅₀ (mm)', p.l+W/2, h-8);
+  ctx.save(); ctx.translate(14,p.t+H/2); ctx.rotate(-Math.PI/2); ctx.fillText('Vs (m/s)',0,0); ctx.restore();
+}
+function drawPanelCharts(cur){
+  drawProtoChart(cur);
+  drawEffChart(cur);
+  drawVelChart(cur);
+  drawRetChart(cur);
+  drawSedChart(cur);
+}
+
+
+
+
+
+function drawGraph1(cur){
+  const trend = makeTrendSeries(cur);
+  const {ctx,w,h}=setupCanvas('chartG1');
+  const yMin = Math.floor((Math.min(...trend.map(d=>d.eta), cur.eta) - 1) / 2) * 2;
+  const yMax = Math.ceil((Math.max(...trend.map(d=>d.eta), cur.eta) + 1) / 2) * 2;
+  const a=drawBase(ctx,w,h,{
+    xMin:0,xMax:16,yMin:yMin,yMax:yMax,
+    xTicks:[0,2,4,6,8,10,12,14,16],
+    yTicks:buildTicks(yMin,yMax,2),
+    xLabel:'Debit Q (m³/s)',
+    yLabel:'η (%)'
+  });
+
+  const pts=trend.map(d=>[a.sx(d.Q), a.sy(d.eta)]);
+  smoothLine(ctx,pts,'#0891b2',[],2.6);
+  pts.forEach(p=>smallPoint(ctx,p[0],p[1],'#0891b2'));
+
+  const qx=a.sx(cur.Q), qy=a.sy(cur.eta);
+  ctx.strokeStyle='rgba(107,114,128,.35)';
+  ctx.setLineDash([5,4]);
+  ctx.beginPath(); ctx.moveTo(qx,a.p.t); ctx.lineTo(qx,a.p.t+a.H); ctx.stroke();
+  ctx.setLineDash([]);
+  point(ctx,qx,qy,'#0891b2');
+  label(ctx,qx,qy,`${rup(cur.eta,1)}%`,'#0891b2',-10,'center');
+}
+
+function drawGraph2(cur){
+  const trend = makeTrendSeries(cur);
+  const {ctx,w,h}=setupCanvas('chartG2');
+  const yMin = 0.04;
+  const yMax = Math.max(0.14, Math.ceil((Math.max(...trend.map(d=>d.V), cur.V)+0.01)*100)/100);
+  const a=drawBase(ctx,w,h,{
+    xMin:0,xMax:16,yMin:yMin,yMax:yMax,
+    xTicks:[0,2,4,6,8,10,12,14,16],
+    yTicks:[0.05,0.07,0.09,0.10,0.12,0.14,0.15].filter(v=>v<=yMax+1e-9),
+    xLabel:'Debit Q (m³/s)',
+    yLabel:'V (m/s)',
+    yFormat:v=>String(v).replace('.',',')
+  });
+
+  const yCrit = a.sy(0.10);
+  ctx.fillStyle='rgba(16,185,129,.08)';
+  ctx.fillRect(a.p.l, yCrit, a.W, a.p.t+a.H-yCrit);
+  ctx.strokeStyle='rgba(239,68,68,.6)';
+  ctx.setLineDash([6,4]);
+  ctx.beginPath(); ctx.moveTo(a.p.l,yCrit); ctx.lineTo(a.p.l+a.W,yCrit); ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle='rgba(239,68,68,.9)';
+  ctx.font='11px Inter';
+  ctx.textAlign='right';
+  ctx.fillText('batas V = 0,10',a.p.l+a.W-4,yCrit-6);
+
+  const pts=trend.map(d=>[a.sx(d.Q), a.sy(d.V)]);
+  smoothLine(ctx,pts,'#ef4444',[],2.6);
+  pts.forEach(p=>smallPoint(ctx,p[0],p[1],'#ef4444'));
+
+  const qx=a.sx(cur.Q), qy=a.sy(cur.V);
+  ctx.strokeStyle='rgba(107,114,128,.35)';
+  ctx.setLineDash([5,4]);
+  ctx.beginPath(); ctx.moveTo(qx,a.p.t); ctx.lineTo(qx,a.p.t+a.H); ctx.stroke();
+  ctx.setLineDash([]);
+  point(ctx,qx,qy,'#ef4444');
+  label(ctx,qx,qy,`${rup(cur.V,3)} m/s`,'#ef4444',-10,'center');
+}
+
+function drawGraph3(cur){
+  const trend = makeTrendSeries(cur);
+  const {ctx,w,h}=setupCanvas('chartG3');
+  const tValues = trend.map(d=>d.T);
+  const yMin = Math.floor((Math.min(...tValues, cur.T) - 5) / 5) * 5;
+  const yMax = Math.ceil((Math.max(...tValues, cur.T) + 5) / 5) * 5;
+  const step = (yMax - yMin) <= 30 ? 5 : 10;
+  const a=drawBase(ctx,w,h,{
+    xMin:0,xMax:16,yMin:yMin,yMax:yMax,
+    xTicks:[0,2,4,6,8,10,12,14,16],
+    yTicks:buildTicks(yMin,yMax,step),
+    xLabel:'Debit Q (m³/s)',
+    yLabel:'T (menit)'
+  });
+
+  const pts=trend.map(d=>[a.sx(d.Q), a.sy(d.T)]);
+  smoothLine(ctx,pts,'#f59e0b',[],2.6);
+  pts.forEach(p=>smallPoint(ctx,p[0],p[1],'#f59e0b'));
+
+  const qx=a.sx(cur.Q), qy=a.sy(cur.T);
+  ctx.strokeStyle='rgba(107,114,128,.35)';
+  ctx.setLineDash([5,4]);
+  ctx.beginPath(); ctx.moveTo(qx,a.p.t); ctx.lineTo(qx,a.p.t+a.H); ctx.stroke();
+  ctx.setLineDash([]);
+  point(ctx,qx,qy,'#f59e0b');
+  label(ctx,qx,qy,`${rup(cur.T,1)} mnt`,'#f59e0b',-10,'center');
+}
+
+function drawGraph4(cur){
+
+  const {ctx,w,h}=setupCanvas('chartG4');
+  const p={l:54,r:24,t:22,b:50};
+  const W=w-p.l-p.r, H=h-p.t-p.b;
+  const xMin=-3.0, xMax=-0.6, yMin=-4.5, yMax=-0.5;
+  const sx=v=>p.l+(v-xMin)/(xMax-xMin)*W;
+  const sy=v=>p.t+H-(v-yMin)/(yMax-yMin)*H;
+
+  ctx.clearRect(0,0,w,h);
+  ctx.fillStyle='#ffffff';
+  ctx.fillRect(0,0,w,h);
+  ctx.strokeStyle='#e5e7eb'; ctx.lineWidth=1;
+  [-3,-2,-1].forEach(v=>{const x=sx(v); ctx.beginPath(); ctx.moveTo(x,p.t); ctx.lineTo(x,p.t+H); ctx.stroke();});
+  [-4,-3,-2,-1].forEach(v=>{const y=sy(v); ctx.beginPath(); ctx.moveTo(p.l,y); ctx.lineTo(p.l+W,y); ctx.stroke();});
+
+  const sed=document.getElementById('sedType').value;
+  const sp=SED_PROFILES[sed];
+  const dMid=(sp.d1+sp.d2)/2;
+  const x1=Math.log10(sp.d1), x2=Math.log10(sp.d2);
+  ctx.fillStyle='rgba(59,130,246,.12)';
+  ctx.fillRect(sx(x1),p.t,sx(x2)-sx(x1),H);
+
+  const pts=VS_DATA.map(d=>[sx(Math.log10(d.d)), sy(Math.log10(d.vs))]);
+  smoothLine(ctx,pts,'#7c3aed',[],2.6);
+  pts.forEach(pp=>smallPoint(ctx,pp[0],pp[1],'#7c3aed'));
+
+  const wms = parseFloat(document.getElementById('wSlider').value)/1000;
+  const qx = sx(Math.log10(dMid));
+  const qy = sy(Math.log10(wms));
+  point(ctx,qx,qy,'#2563eb');
+  label(ctx,qx,qy,`${sp.label}: Vs ${rup(wms,3)}`,'#2563eb',-10,'center');
+
+  ctx.strokeStyle='#94a3b8';
+  ctx.lineWidth=1.5;
+  ctx.beginPath();
+  ctx.moveTo(p.l,p.t); ctx.lineTo(p.l,p.t+H); ctx.lineTo(p.l+W,p.t+H); ctx.stroke();
+
+  ctx.fillStyle='#6b7280'; ctx.font='11px Inter';
+  ctx.textAlign='center';
+  [-3,-2,-1].forEach(v=>ctx.fillText(String(v).replace('.',','),sx(v),p.t+H+18));
+  ctx.textAlign='right';
+  [-4,-3,-2,-1].forEach(v=>ctx.fillText(String(v).replace('.',','),p.l-7,sy(v)+4));
+
+  ctx.fillStyle='#374151'; ctx.font='bold 13px Inter'; ctx.textAlign='center';
+  ctx.fillText('D₅₀ (mm) — skala log', p.l+W/2, h-8);
+  ctx.save();
+  ctx.translate(16,p.t+H/2);
+  ctx.rotate(-Math.PI/2);
+  ctx.fillText('Vs (m/s) — log', 0, 0);
+  ctx.restore();
+}
+
+function drawFourCharts(cur){
+  drawGraph1(cur);
+  drawGraph2(cur);
+  drawGraph3(cur);
+  drawGraph4(cur);
+}
+
+
+function updateCards(cur){
+  const lb=cur.L/cur.B;                         // rasio dimensi total: Ltotal / Btotal
+  const N=parseInt(document.getElementById('nSlider').value,10);
+  const Bkomp=cur.B/N;                          // Bkomp = Btotal / N
+  const Lkomp=cur.L;                            // panjang kompartemen = panjang kantong lumpur
+  const luasTotal=cur.L*cur.B;                  // luas total = Ltotal × Btotal
+  const luasKomp=Lkomp*Bkomp;                   // luas kompartemen = Lkomp × Bkomp
+  const rasioKomp=Lkomp/Bkomp;                  // rasio kompartemen = L<sub>kompartemen</sub> / B<sub>kompartemen</sub>
+
+  const etaClass=cur.eta>=60?'good':cur.eta>=40?'warn':'bad';
+  const ratioClass=lb>=8?'good':'bad';
+  const compClass=rasioKomp>=4?'good':(rasioKomp>=3?'warn':'bad');
+
+  // Urutan disesuaikan dengan tabel:
+  // dimensi total, dimensi kompartemen, luas total, luas kompartemen,
+  // rasio dimensi total, rasio dimensi kompartemen, efisiensi, waktu retensi.
+  const cards=[
+    ['Dimensi Total',`${rup(cur.L,2)} × ${rup(cur.B,2)}`,'m (Ltotal × Btotal)',''],
+    ['Dimensi Komp.',`${rup(Lkomp,2)} × ${rup(Bkomp,2)}`,'m (L<sub>kompartemen</sub> × B<sub>kompartemen</sub>)',compClass],
+
+    ['Luas Total',rup(luasTotal,2),'m² = Ltotal × Btotal',''],
+    ['Luas Komp.',rup(luasKomp,2),'m² = L<sub>kompartemen</sub> × B<sub>kompartemen</sub>',compClass],
+
+    ['Rasio Dimensi Total',rup(lb,2),'Ltotal / Btotal',ratioClass],
+    ['Rasio Dimensi Komp.',rup(rasioKomp,2),'L<sub>kompartemen</sub> / B<sub>kompartemen</sub>',compClass],
+
+    ['<span class="eta-symbol">η</span> Efisiensi',rup(cur.eta,2),'% pengendapan',etaClass],
+    ['Waktu Retensi',rup(cur.T,2),'menit','']
+  ];
+
+  document.getElementById('resultGrid').innerHTML=cards.map(c=>`<div class="result-card ${c[3]}"><div class="name">${c[0]}</div><div class="value">${c[1]}</div><div class="unit">${c[2]}</div></div>`).join('');
+}
+function updateStatus(cur){
+  const lb=cur.L/cur.B;
+  const N=parseInt(document.getElementById('nSlider').value,10);
+  const Bkomp=cur.B/N, rasioKomp=cur.L/Bkomp;
+  let status='Perlu Optimasi', cls='';
+  if(lb>=8 && cur.V<=0.15 && cur.eta>=60 && rasioKomp>=4){status='Cukup Aman';cls='good'}
+  else if(lb<8 || cur.V>0.20 || cur.eta<40 || rasioKomp<3){status='Perlu Revisi';cls='bad'}
+  const box=document.getElementById('statusMain');box.className='status-main '+cls;document.getElementById('statusTitle').textContent=status;
+  const items=[];
+  items.push(`Btotal = Q/(v×h) = ${rup(cur.B,2)} m, lalu Bkomp = Btotal/N = ${rup(Bkomp,2)} m untuk N=${N}.`);
+  items.push(lb>=8?`Rasio dimensi L/B = ${rup(lb,1)} : 1 dan memenuhi batas geometrik ≥ 8.`:`Rasio dimensi L/B = ${rup(lb,1)} : 1 masih perlu dicek karena belum memenuhi batas geometrik ≥ 8.`);
+  items.push(rasioKomp>=4?`Rasio dimensi kompartemen L<sub>kompartemen</sub>/B<sub>kompartemen</sub> = ${rup(rasioKomp,1)} : 1 dan memenuhi batas ≥ 4.`:`Rasio dimensi kompartemen L<sub>kompartemen</sub>/B<sub>kompartemen</sub> = ${rup(rasioKomp,1)} : 1 masih perlu dicek karena belum memenuhi batas ≥ 4.`);
+  items.push(`Panjang L = As/Btotal = ${rup(cur.L,2)} m, dengan As = Q/w = ${rup(cur.As,2)} m².`);
+  document.getElementById('recoList').innerHTML=items.map(x=>`<li>${x}</li>`).join('');
+}
+function update(){
+  const Q=parseFloat(document.getElementById('qSlider').value);document.getElementById('qText').textContent=rup(Q,1);document.getElementById('qNum').value=Q;
+  const C0=parseFloat(document.getElementById('cSlider').value);document.getElementById('cText').textContent=rup(C0,0);document.getElementById('cNum').value=C0;
+  const N=parseInt(document.getElementById('nSlider').value,10);document.getElementById('nText').textContent=N;document.getElementById('nNum').value=N;
+  const hPlan=parseFloat(document.getElementById('hSlider').value);document.getElementById('hText').textContent=rup(hPlan,1);document.getElementById('hNum').value=hPlan;
+  const spAuto=applySedimentDefaults();
+  const vPlan=spAuto.vPlan;
+  const wmm=spAuto.wmm;
+  TABLE=generateTable(hPlan,vPlan,wmm/1000);
+  const cur=interp(Q);updateCards(cur);updateStatus(cur);drawNomogram(cur);drawFourCharts(cur);
+}
+document.getElementById('qSlider').addEventListener('input',update);
+document.getElementById('qNum').addEventListener('input',e=>{let v=parseFloat(e.target.value);if(!isNaN(v)){v=Math.max(1,Math.min(15,v));document.getElementById('qSlider').value=v;update();}});
+
+document.getElementById('cSlider').addEventListener('input',update);
+document.getElementById('cNum').addEventListener('input',e=>{let v=parseFloat(e.target.value);if(!isNaN(v)){v=Math.max(50,Math.min(1000,v));document.getElementById('cSlider').value=v;update();}});
+document.getElementById('nSlider').addEventListener('input',update);
+document.getElementById('nNum').addEventListener('input',e=>{let v=parseInt(e.target.value,10);if(!isNaN(v)){v=Math.max(1,Math.min(8,v));document.getElementById('nSlider').value=v;update();}});
+
+['h'].forEach(prefix=>{
+  const slider=document.getElementById(prefix+'Slider'), num=document.getElementById(prefix+'Num');
+  slider.addEventListener('input',update);
+  num.addEventListener('input',e=>{let v=parseFloat(e.target.value); if(!isNaN(v)){ slider.value=v; update(); }});
+});
+document.getElementById('sedType').addEventListener('change',update);
+window.addEventListener('resize',()=>setTimeout(update,100));
+update();
+</script>
+</body>
+</html>
