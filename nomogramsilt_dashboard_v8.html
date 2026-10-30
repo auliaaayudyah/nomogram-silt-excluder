@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Silt Settler Nomogram – Preliminary Design for Cohesive Sediment</title>
+<meta name="author" content="Herryan Kendra">
+<style>
+:root{--ink:#1b2a41;--blue:#08306b;--mid:#2171b5;--light:#eef4fa;--red:#c0392b;--grey:#666;--line:#d9dee5;--ok:#e5f5e0;--bad:#fde0dd}
+*{box-sizing:border-box}
+body{margin:0;font-family:Calibri,Carlito,"Segoe UI",Arial,sans-serif;color:var(--ink);background:#f6f8fb;font-size:15px}
+header{background:var(--blue);color:#fff;padding:14px 24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+header h1{font-size:20px;margin:0;font-weight:600}
+header .sub{font-size:13px;opacity:.85}
+.lang button{background:transparent;color:#fff;border:1px solid #fff8;border-radius:4px;padding:3px 10px;margin-left:4px;cursor:pointer;font-size:13px}
+.lang button.on{background:#fff;color:var(--blue)}
+main{max-width:1280px;margin:0 auto;padding:16px 20px;display:grid;grid-template-columns:330px 1fr;gap:16px}
+@media(max-width:900px){main{grid-template-columns:1fr}}
+.card{background:#fff;border:1px solid var(--line);border-radius:8px;padding:14px 16px}
+.card h2{font-size:15px;margin:0 0 10px;color:var(--blue);text-transform:uppercase;letter-spacing:.03em}
+label{display:block;font-size:13px;color:var(--grey);margin-top:8px}
+input,select{width:100%;padding:6px 8px;border:1px solid var(--line);border-radius:5px;font-size:14px;font-family:inherit}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.param{font-size:13px}
+.param label{margin-top:6px}
+details summary{cursor:pointer;color:var(--mid);font-size:13px;margin-top:10px}
+.res{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin-top:6px}
+.tile{background:var(--light);border-radius:6px;padding:8px 10px}
+.tile .k{font-size:12px;color:var(--grey)}
+.tile .v{font-size:19px;font-weight:600;color:var(--blue)}
+.tile .u{font-size:12px;color:var(--grey);margin-left:3px}
+.tile.main{background:var(--blue);color:#fff}.tile.main .k,.tile.main .u{color:#cfe0f5}.tile.main .v{color:#fff}
+.status{margin-top:10px;padding:8px 12px;border-radius:6px;font-size:14px}
+.status.ok{background:var(--ok)}.status.bad{background:var(--bad)}.status.none{background:#f1f1f1;color:var(--grey)}
+.eq{font-family:"Cambria Math","Times New Roman",serif;font-size:14px;line-height:1.9;margin-top:4px}
+.eq .n{float:right;color:var(--grey)}
+.eq i{font-style:italic}
+.charts{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:1000px){.charts{grid-template-columns:1fr}}
+svg{width:100%;height:auto;display:block}
+.cap{font-size:12.5px;color:var(--grey);margin-top:6px}
+footer{max-width:1280px;margin:0 auto;padding:6px 20px 20px;font-size:12.5px;color:var(--grey)}
+.note{font-size:12.5px;color:var(--grey);margin-top:6px}
+</style>
+</head>
+<body>
+<header>
+  <div><h1 data-i="title">Silt Settler Nomogram</h1><div class="sub" data-i="subtitle">Preliminary design of a straight compartmented silt settler for cohesive sediment at a candidate weir site</div></div>
+  <div class="lang"><button id="btn-en" class="on" onclick="setLang('en')">EN</button><button id="btn-id" onclick="setLang('id')">ID</button></div>
+</header>
+<main>
+<section class="card">
+  <h2 data-i="inputs">Inputs</h2>
+  <label data-i="Q">Design settling discharge Q (m³/s)</label><input id="Q" type="number" step="0.1" value="5.0">
+  <label data-i="h">Flow depth h (m)</label><input id="h" type="number" step="0.1" value="1.3">
+  <label data-i="sedmode">Sediment input</label>
+  <select id="mode" onchange="syncMode()">
+    <option value="vs" data-i="mode_vs">Effective settling velocity Vs (mm/s)</option>
+    <option value="d" data-i="mode_d">Particle diameter d (µm) – Stokes, Eq. (9)</option>
+  </select>
+  <div class="row">
+    <div><label data-i="Vs">Vs (mm/s)</label><input id="Vs" type="number" step="0.01" value="1.1"></div>
+    <div><label data-i="d">d (µm)</label><input id="d" type="number" step="1" value="30" disabled></div>
+  </div>
+  <label data-i="N">Number of compartments N</label>
+  <select id="N"><option>4</option><option>5</option><option>6</option></select>
+  <label data-i="eta">Target trapping efficiency η* (%)</label><input id="eta" type="number" step="1" min="10" max="99" value="80">
+  <label data-i="La">Length available at the site La (m) – optional</label><input id="La" type="number" step="10" placeholder="—">
+  <details open><summary data-i="params">Parameters (defaults from the paper)</summary>
+    <div class="param row">
+      <div><label>τd (N/m²)</label><input id="td" type="number" step="0.01" value="0.06"></div>
+      <div><label>n (Manning)</label><input id="n" type="number" step="0.001" value="0.015"></div>
+      <div><label>Ct (–)</label><input id="Ct" type="number" step="0.01" value="0.35"></div>
+      <div><label>qmax (m/h)</label><input id="qmax" type="number" step="0.1" value="1.5"></div>
+      <div><label>ρs (kg/m³)</label><input id="rhos" type="number" step="10" value="2650"></div>
+      <div><label>μ (Pa·s)</label><input id="mu" type="number" step="0.0001" value="0.001"></div>
+    </div>
+    <div class="note" data-i="paramnote">Ct = 0.35 calibrated from 3-D simulations of a straight four-compartment basin; τd is the Krone deposition threshold; qmax is the upper bound of the 0.5–1.5 m/h range for fine sediment.</div>
+  </details>
+</section>
+
+<section style="display:grid;gap:14px">
+  <div class="card">
+    <h2 data-i="results">Results</h2>
+    <div class="res" id="res"></div>
+    <div id="status" class="status none"></div>
+  </div>
+  <div class="card charts">
+    <div><svg id="chartA" viewBox="0 0 520 400"></svg><div class="cap" data-i="capA">(a) Settler length L against settling velocity Vs for target efficiencies; dash-dot line is the surface-loading floor Lq; marker = your design.</div></div>
+    <div><svg id="chartB" viewBox="0 0 520 400"></svg><div class="cap" data-i="capB">(b) Compartment width b (N = 4, 5, 6) and total width B (dashed, right axis) against discharge Q; marker = your design.</div></div>
+  </div>
+  <div class="card">
+    <h2 data-i="equations">Design equations</h2>
+    <div class="eq">
+      <div><i>τ</i><sub>b</sub> = <i>ρ g n</i>² <i>U</i>² / <i>h</i><sup>1/3</sup><span class="n">(1)</span></div>
+      <div><i>U</i><sub>d</sub> = (<i>τ</i><sub>d</sub> <i>h</i><sup>1/3</sup> / (<i>ρ g n</i>²))<sup>1/2</sup><span class="n">(2)</span></div>
+      <div><i>B</i> = <i>Q</i> / (<i>U</i><sub>d</sub> <i>h</i>),&nbsp; <i>b</i> = <i>B</i> / <i>N</i><span class="n">(3)</span></div>
+      <div><i>η</i> = 1 − exp(−<i>C</i><sub>t</sub> <i>V</i><sub>s</sub> <i>A</i> / <i>Q</i>)<span class="n">(4)</span></div>
+      <div><i>L</i><sub>s</sub> = <i>U</i><sub>d</sub> <i>h</i> ln(1/(1 − <i>η</i>*)) / (<i>C</i><sub>t</sub> <i>V</i><sub>s</sub>)<span class="n">(5)</span></div>
+      <div><i>L</i><sub>q</sub> = <i>U</i><sub>d</sub> <i>h</i> / <i>q</i><sub>max</sub><span class="n">(6)</span></div>
+      <div><i>L</i> = max(<i>L</i><sub>s</sub>, <i>L</i><sub>q</sub>)<span class="n">(7)</span></div>
+      <div><i>η</i><sub>L</sub> = 1 − exp(−<i>C</i><sub>t</sub> <i>V</i><sub>s</sub> <i>L</i> / (<i>U</i><sub>d</sub> <i>h</i>))<span class="n">(8)</span></div>
+      <div><i>V</i><sub>s</sub> = (<i>ρ</i><sub>s</sub> − <i>ρ</i>) <i>g d</i>² / (18 <i>μ</i>)<span class="n">(9)</span></div>
+    </div>
+    <div class="note" data-i="eqnote">ρ = 1000 kg/m³, g = 9.81 m/s². The settler length is independent of discharge; discharge sets only the width. The sediment fixes the plan area A, so a site that cannot take the length should widen the settler (U below Ud) rather than shorten it. The procedure is for preliminary design at the weir-siting stage and must be verified by CFD and physical modelling before detailed design.</div>
+  </div>
+</section>
+</main>
+<footer data-i="footer">Kaharudin H. K., Irawan A. P., Pranoto W. A. — Nomogram for Preliminary Design of Silt Settlers for Cohesive Sediment at Weir Sites. Doctoral Program in Civil Engineering, Universitas Tarumanagara. nomogramsilt.my.id</footer>
+
+<script>
+const I18N={
+en:{title:"Silt Settler Nomogram",subtitle:"Preliminary design of a straight compartmented silt settler for cohesive sediment at a candidate weir site",inputs:"Inputs",Q:"Design settling discharge Q (m³/s)",h:"Flow depth h (m)",sedmode:"Sediment input",mode_vs:"Effective settling velocity Vs (mm/s)",mode_d:"Particle diameter d (µm) – Stokes, Eq. (9)",Vs:"Vs (mm/s)",d:"d (µm)",N:"Number of compartments N",eta:"Target trapping efficiency η* (%)",La:"Length available at the site La (m) – optional",params:"Parameters (defaults from the paper)",paramnote:"Ct = 0.35 calibrated from 3-D simulations of a straight four-compartment basin; τd is the Krone deposition threshold; qmax is the upper bound of the 0.5–1.5 m/h range for fine sediment.",results:"Results",capA:"(a) Settler length L against settling velocity Vs for target efficiencies; dash-dot line is the surface-loading floor Lq; marker = your design.",capB:"(b) Compartment width b (N = 4, 5, 6) and total width B (dashed, right axis) against discharge Q; marker = your design.",equations:"Design equations",eqnote:"ρ = 1000 kg/m³, g = 9.81 m/s². The settler length is independent of discharge; discharge sets only the width. The sediment fixes the plan area A, so a site that cannot take the length should widen the settler (U below Ud) rather than shorten it. The procedure is for preliminary design at the weir-siting stage and must be verified by CFD and physical modelling before detailed design.",footer:"Kaharudin H. K., Irawan A. P., Pranoto W. A. — Nomogram for Preliminary Design of Silt Settlers for Cohesive Sediment at Weir Sites. Doctoral Program in Civil Engineering, Universitas Tarumanagara. nomogramsilt.my.id",
+ Ud:"Design velocity Ud – Eq. (2)",B:"Total width B – Eq. (3)",b:"Compartment width b",Ls:"Settling length Ls – Eq. (5)",Lq:"Surface-loading length Lq – Eq. (6)",L:"Design length L – Eq. (7)",A:"Plan area A = L·B",q:"Surface loading q = Q/A",T:"Retention time T = L/Ud",Vsout:"Settling velocity Vs",etaL:"Achievable ηL at La without widening – Eq. (8)",Ba:"Widened total width Ba = A/La",
+ ok:"La ≥ L: the settler fits the site. Preliminary dimensions above.",bad:"La < L. Option 1 – keep the plan area by widening: Ba = {B} m at La, U = {u} m/s (below Ud), about {n} compartments of 5 m; needs inlet guide baffles. Option 2 – keep B and accept {e} % at La. Otherwise consider another intake location, catchment measures, or the fine fraction as wash load.",Ba_sub:"widened layout at La: U = {u} m/s, N ≈ {n}",none:"Enter La to check the design against the length available at the site.",gov_s:"governed by settling (Ls)",gov_q:"governed by surface loading (Lq)",axVs:"Settling velocity Vs (mm/s)",axL:"Settler length L (m)",axQ:"Design settling discharge Q (m³/s)",axb:"Compartment width b (m)",axB:"Total width B (m)",floor:"Lq floor",you:"your design",hLabel:"h = "},
+id:{title:"Nomogram Kantong Lumpur",subtitle:"Perencanaan awal kantong lumpur lurus berkompartemen untuk sedimen kohesif pada lokasi rencana bendung",inputs:"Masukan",Q:"Debit pengendapan rencana Q (m³/s)",h:"Kedalaman aliran h (m)",sedmode:"Masukan sedimen",mode_vs:"Kecepatan endap efektif Vs (mm/s)",mode_d:"Diameter partikel d (µm) – Stokes, Pers. (9)",Vs:"Vs (mm/s)",d:"d (µm)",N:"Jumlah kompartemen N",eta:"Efisiensi penangkapan sasaran η* (%)",La:"Panjang tersedia di lokasi La (m) – opsional",params:"Parameter (nilai bawaan dari makalah)",paramnote:"Ct = 0,35 dikalibrasi dari simulasi 3-D kolam lurus empat kompartemen; τd ambang pengendapan Krone; qmax batas atas rentang 0,5–1,5 m/jam untuk sedimen halus.",results:"Hasil",capA:"(a) Panjang kantong lumpur L terhadap kecepatan endap Vs untuk beberapa efisiensi sasaran; garis titik-garis adalah batas beban permukaan Lq; penanda = rancangan Anda.",capB:"(b) Lebar kompartemen b (N = 4, 5, 6) dan lebar total B (putus-putus, sumbu kanan) terhadap debit Q; penanda = rancangan Anda.",equations:"Persamaan perencanaan",eqnote:"ρ = 1000 kg/m³, g = 9,81 m/s². Panjang kantong lumpur tidak bergantung pada debit; debit hanya menentukan lebar. Sedimen menetapkan luas denah A, sehingga lokasi yang tidak dapat menampung panjangnya sebaiknya melebarkan kantong lumpur (U di bawah Ud), bukan memperpendeknya. Prosedur ini untuk perencanaan awal pada tahap penentuan as bendung dan harus diverifikasi dengan CFD dan model fisik sebelum perencanaan rinci.",footer:"Kaharudin H. K., Irawan A. P., Pranoto W. A. — Nomogram for Preliminary Design of Silt Settlers for Cohesive Sediment at Weir Sites. Program Doktor Teknik Sipil, Universitas Tarumanagara. nomogramsilt.my.id",
+ Ud:"Kecepatan rencana Ud – Pers. (2)",B:"Lebar total B – Pers. (3)",b:"Lebar kompartemen b",Ls:"Panjang pengendapan Ls – Pers. (5)",Lq:"Panjang beban permukaan Lq – Pers. (6)",L:"Panjang rencana L – Pers. (7)",A:"Luas denah A = L·B",q:"Beban permukaan q = Q/A",T:"Waktu tinggal T = L/Ud",Vsout:"Kecepatan endap Vs",etaL:"ηL tercapai pada La tanpa pelebaran – Pers. (8)",Ba:"Lebar total dilebarkan Ba = A/La",
+ ok:"La ≥ L: kantong lumpur muat di lokasi. Dimensi awal di atas.",bad:"La < L. Opsi 1 – pertahankan luas denah dengan melebarkan: Ba = {B} m pada La, U = {u} m/s (di bawah Ud), sekitar {n} kompartemen selebar 5 m; perlu sekat pengarah inlet. Opsi 2 – pertahankan B dan terima {e} % pada La. Bila tidak, pertimbangkan letak intake lain, tindakan di daerah tangkapan, atau fraksi halus sebagai muatan bilas.",Ba_sub:"tata letak dilebarkan pada La: U = {u} m/s, N ≈ {n}",none:"Isi La untuk memeriksa rancangan terhadap panjang yang tersedia di lokasi.",gov_s:"ditentukan pengendapan (Ls)",gov_q:"ditentukan beban permukaan (Lq)",axVs:"Kecepatan endap Vs (mm/s)",axL:"Panjang kantong lumpur L (m)",axQ:"Debit pengendapan rencana Q (m³/s)",axb:"Lebar kompartemen b (m)",axB:"Lebar total B (m)",floor:"batas Lq",you:"rancangan Anda",hLabel:"h = "}
+};
+let lang="en"; const t=k=>I18N[lang][k];
+function setLang(l){lang=l;document.documentElement.lang=l;document.querySelectorAll("[data-i]").forEach(e=>{const k=e.getAttribute("data-i");if(I18N[l][k])e.textContent=I18N[l][k]});document.getElementById("btn-en").classList.toggle("on",l==="en");document.getElementById("btn-id").classList.toggle("on",l==="id");calc();}
+const v=id=>parseFloat(document.getElementById(id).value);
+const fmt=(x,d)=>{let s=x.toLocaleString(lang==="id"?"id-ID":"en-US",{minimumFractionDigits:d,maximumFractionDigits:d});return s;};
+const RHO=1000,G=9.81;
+function syncMode(){const m=document.getElementById("mode").value;document.getElementById("Vs").disabled=(m==="d");document.getElementById("d").disabled=(m==="vs");calc();}
+function Ud(h){return Math.sqrt(v("td")*Math.pow(h,1/3)/(RHO*G*v("n")*v("n")));}
+function stokes(d){return (v("rhos")-RHO)*G*Math.pow(d*1e-6,2)/(18*v("mu"));}
+function calc(){
+  const Q=v("Q"),h=v("h"),N=parseInt(document.getElementById("N").value),eta=v("eta")/100,Ct=v("Ct"),qmax=v("qmax")/3600;
+  let Vs; if(document.getElementById("mode").value==="d"){Vs=stokes(v("d"));document.getElementById("Vs").value=(Vs*1000).toFixed(3);}else{Vs=v("Vs")/1000;}
+  const ud=Ud(h),B=Q/(ud*h),b=B/N,Ls=ud*h*Math.log(1/(1-eta))/(Ct*Vs),Lq=ud*h/qmax,L=Math.max(Ls,Lq),A=L*B,q=Q/A*3600,T=L/ud/3600;
+  const La=v("La"); let etaL=null,Ba=null,Na=null,Ua=null; if(!isNaN(La)&&La>0){etaL=1-Math.exp(-Ct*Vs*La/(ud*h)); Ba=L*B/La; Ua=Q/(Ba*h); Na=Math.max(4,Math.round(Ba/5));}
+  const tiles=[["Ud",fmt(ud,3),"m/s"],["B",fmt(B,1),"m"],["b",fmt(b,2),"m"],["Vsout",fmt(Vs*1000,3),"mm/s"],["Ls",fmt(Ls,0),"m"],["Lq",fmt(Lq,0),"m"],["L",fmt(L,0),"m",true,L===Ls?t("gov_s"):t("gov_q")],["A",fmt(A,0),"m²"],["q",fmt(q,2),"m/h"],["T",fmt(T,1),"h"]];
+  if(etaL!==null&&La<L){tiles.push(["Ba",fmt(Ba,1),"m",false,t("Ba_sub").replace("{u}",fmt(Ua,3)).replace("{n}",Na)]);tiles.push(["etaL",fmt(etaL*100,1),"%"]);}
+  document.getElementById("res").innerHTML=tiles.map(x=>`<div class="tile${x[3]?" main":""}"><div class="k">${t(x[0])}</div><div class="v">${x[1]}<span class="u">${x[2]}</span></div>${x[4]?`<div class="k">${x[4]}</div>`:""}</div>`).join("");
+  const st=document.getElementById("status");
+  if(etaL===null){st.className="status none";st.textContent=t("none");}else if(La>=L){st.className="status ok";st.textContent=t("ok");}else{st.className="status bad";st.textContent=t("bad").replace("{e}",fmt(etaL*100,1)).replace("{B}",fmt(Ba,1)).replace("{n}",Na).replace("{u}",fmt(Ua,3));}
+  drawA(h,ud,Ct,qmax,eta,Vs,L); drawB(h,ud,Q,N,B,b);
+}
+// ---- charts ----
+const NS="http://www.w3.org/2000/svg";
+function el(n,a,txt){const e=document.createElementNS(NS,n);for(const k in a)e.setAttribute(k,a[k]);if(txt!==undefined)e.textContent=txt;return e;}
+function drawA(h,ud,Ct,qmax,eta,Vs,L){
+  const s=document.getElementById("chartA");s.innerHTML="";
+  const x0=70,x1=500,y0=20,y1=340; const lx=Math.log10, vmin=0.05,vmax=5, lmin=100,lmax=30000;
+  const X=vv=>x0+(lx(vv)-lx(vmin))/(lx(vmax)-lx(vmin))*(x1-x0), Y=ll=>y1-(lx(ll)-lx(lmin))/(lx(lmax)-lx(lmin))*(y1-y0);
+  s.appendChild(el("rect",{x:x0,y:y0,width:x1-x0,height:y1-y0,fill:"#fff",stroke:"#333","stroke-width":1}));
+  [0.1,1].forEach(g=>{s.appendChild(el("line",{x1:X(g),x2:X(g),y1:y0,y2:y1,stroke:"#eee"}));s.appendChild(el("text",{x:X(g),y:y1+16,"text-anchor":"middle","font-size":12},g));});
+  [0.05,0.5,5].forEach(g=>s.appendChild(el("text",{x:X(g),y:y1+16,"text-anchor":"middle","font-size":12},g)));
+  [100,1000,10000].forEach(g=>{s.appendChild(el("line",{x1:x0,x2:x1,y1:Y(g),y2:Y(g),stroke:"#eee"}));s.appendChild(el("text",{x:x0-6,y:Y(g)+4,"text-anchor":"end","font-size":12},g.toLocaleString("en-US")));});
+  s.appendChild(el("text",{x:(x0+x1)/2,y:y1+36,"text-anchor":"middle","font-size":13},t("axVs")));
+  const yl=el("text",{x:16,y:(y0+y1)/2,"text-anchor":"middle","font-size":13,transform:`rotate(-90 16 ${(y0+y1)/2})`},t("axL"));s.appendChild(yl);
+  const Lq=ud*h/qmax;
+  const sets=[[0.5,"4 3"],[0.7,"8 4"],[0.8,""]]; if(![0.5,0.7,0.8].includes(eta)) sets.push([eta,"2 2"]);
+  sets.forEach(([e,dash],i)=>{let d="";for(let k=0;k<=120;k++){const vv=vmin*Math.pow(vmax/vmin,k/120);const ll=Math.max(ud*h*Math.log(1/(1-e))/(Ct*vv/1000),Lq);d+=(k?"L":"M")+X(vv).toFixed(1)+" "+Y(Math.min(Math.max(ll,lmin),lmax)).toFixed(1)+" ";}
+    s.appendChild(el("path",{d,fill:"none",stroke:e===eta?"#c0392b":"#08306b","stroke-width":e===eta?2.2:1.4,"stroke-dasharray":dash}));
+    s.appendChild(el("text",{x:x1-6,y:y0+16+i*16,"text-anchor":"end","font-size":12,fill:e===eta?"#c0392b":"#08306b"},"η* = "+Math.round(e*100)+"%"));});
+  s.appendChild(el("line",{x1:x0,x2:x1,y1:Y(Lq),y2:Y(Lq),stroke:"#c0392b","stroke-dasharray":"6 3 1 3"}));
+  s.appendChild(el("text",{x:x0+6,y:Y(Lq)-5,"font-size":12,fill:"#c0392b"},t("floor")+" = "+Math.round(Lq)+" m"));
+  s.appendChild(el("circle",{cx:X(Math.min(Math.max(Vs*1000,vmin),vmax)),cy:Y(Math.min(Math.max(L,lmin),lmax)),r:6,fill:"#f39c12",stroke:"#333"}));
+  s.appendChild(el("text",{x:X(Math.min(Math.max(Vs*1000,vmin),vmax))+9,y:Y(Math.min(Math.max(L,lmin),lmax))+4,"font-size":12},t("you")+" ("+t("hLabel")+h+" m)"));
+}
+function drawB(h,ud,Q,N,B,b){
+  const s=document.getElementById("chartB");s.innerHTML="";
+  const x0=60,x1=460,y0=20,y1=340; const qmin=0,qmax=Math.max(10,Math.ceil(Q*1.2)); const bmax=Math.ceil(qmax/(ud*h)/4/2)*2, Bmax=Math.ceil(qmax/(ud*h)/10)*10;
+  const X=qq=>x0+(qq-qmin)/(qmax-qmin)*(x1-x0), Yb=bb=>y1-bb/bmax*(y1-y0), YB=BB=>y1-BB/Bmax*(y1-y0);
+  s.appendChild(el("rect",{x:x0,y:y0,width:x1-x0,height:y1-y0,fill:"#fff",stroke:"#333"}));
+  for(let g=0;g<=qmax;g+=qmax/5){s.appendChild(el("line",{x1:X(g),x2:X(g),y1:y0,y2:y1,stroke:"#eee"}));s.appendChild(el("text",{x:X(g),y:y1+16,"text-anchor":"middle","font-size":12},+g.toFixed(1)));}
+  for(let g=0;g<=bmax;g+=bmax/4){s.appendChild(el("line",{x1:x0,x2:x1,y1:Yb(g),y2:Yb(g),stroke:"#eee"}));s.appendChild(el("text",{x:x0-6,y:Yb(g)+4,"text-anchor":"end","font-size":12},+g.toFixed(1)));}
+  for(let g=0;g<=Bmax;g+=Bmax/5){s.appendChild(el("text",{x:x1+6,y:YB(g)+4,"font-size":12,fill:"#555"},g));}
+  s.appendChild(el("text",{x:(x0+x1)/2,y:y1+36,"text-anchor":"middle","font-size":13},t("axQ")));
+  s.appendChild(el("text",{x:16,y:(y0+y1)/2,"text-anchor":"middle","font-size":13,transform:`rotate(-90 16 ${(y0+y1)/2})`},t("axb")));
+  s.appendChild(el("text",{x:505,y:(y0+y1)/2,"text-anchor":"middle","font-size":13,fill:"#555",transform:`rotate(90 505 ${(y0+y1)/2})`},t("axB")));
+  const cols={4:"#08306b",5:"#2171b5",6:"#6baed6"};
+  [4,5,6].forEach((n,i)=>{s.appendChild(el("line",{x1:X(0),y1:Yb(0),x2:X(qmax),y2:Yb(qmax/(ud*h)/n),stroke:cols[n],"stroke-width":n===N?2.4:1.4}));s.appendChild(el("text",{x:x0+8,y:y0+16+i*16,"font-size":12,fill:cols[n]},"N = "+n));});
+  s.appendChild(el("line",{x1:X(0),y1:YB(0),x2:X(qmax),y2:YB(qmax/(ud*h)),stroke:"#555","stroke-dasharray":"6 4"}));
+  s.appendChild(el("circle",{cx:X(Q),cy:Yb(b),r:6,fill:"#f39c12",stroke:"#333"}));
+  s.appendChild(el("text",{x:X(Q)+9,y:Yb(b)+4,"font-size":12},"b = "+b.toFixed(2)+" m, B = "+B.toFixed(1)+" m"));
+}
+document.querySelectorAll("input,select").forEach(e=>e.addEventListener("input",calc));
+syncMode();
+</script>
+</body>
+</html>
